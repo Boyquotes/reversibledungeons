@@ -6,6 +6,7 @@ var player_tile
 
 ## todo:tilesizeはlevelにだけ持たせたい
 var tilesize = 16
+var inputOK:bool = true
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -13,37 +14,82 @@ func _ready():
     position = player_tile * tilesize
 
 
-func _input(event):
-    var _x = 0
-    var _y = 0
-    if event.is_pressed() == false:
-        return
-    if event.is_action("ui_left"):
-        _x -= 1
-    elif event.is_action("ui_right"):
-        _x += 1
-    elif event.is_action("ui_up"):
-        _y -= 1
-    elif event.is_action("ui_down"):
-        _y += 1
+func _process(delta):
+    print(delta)
+    # 入力なんかカクつくから_processでやったほうがいいかも？
+    # _processを止めたい時はset_process(false)を使うといいらしい
+    if inputOK == true:
+        var _x = 0
+        var _y = 0
+        var diagonalonly : bool = false
+        var changedirection : bool = false
+        if Input.is_action_pressed("ui_left"):
+            _x -= 1
+        if Input.is_action_pressed("ui_right"):
+            _x += 1
+        if Input.is_action_pressed("ui_up"):
+            _y -= 1
+        if Input.is_action_pressed("ui_down"):
+            _y += 1
+        if Input.is_action_pressed("ui_diagonal_only"):
+            diagonalonly = true
+        if Input.is_action_pressed("ui_change_direction"):
+            changedirection = true
+            
+        if diagonalonly == false and (_x != 0 or _y != 0):
+            if changedirection == false:
+                try_move(_x, _y)
+            else:
+                animation_change(_x,_y)
+        elif diagonalonly == true and (_x != 0 and _y != 0):
+            if changedirection == false:
+                try_move(_x, _y)
+            else:
+                animation_change(_x,_y)
 
-    if _x != 0 or _y != 0:
-        try_move(_x, _y)
-    
-    ## fix:たぶんここに書いちゃダメだと思う
-    update()
+        ## fix:たぶんここに書いちゃダメだと思う
+        #update()
 
 func try_move(dx, dy):
     var x = player_tile.x + dx
     var y = player_tile.y + dy
-
     ## todo:マップのサイズ取得してマップの外に出れないようにする
     # if x >= 0 && x < level_size.x && y >= 0 && y < level_size.y:
     # tile_type = map[x][y]    
     
+    animation_change(dx,dy)
     ## todo:このへんにマップの地形属性取得して云々したり壁に当たったら進めない処理書く
     player_tile = Vector2(x, y)
+    update()
 
 func update():
-    position = player_tile * tilesize
+    inputOK = false
+    $Tween.interpolate_property(self, "position", null, player_tile * tilesize, 0.4, Tween.TRANS_LINEAR, Tween.EASE_IN_OUT)
+    $Tween.start()
+    yield($Tween,"tween_completed")
+    inputOK = true
+    #position = player_tile * tilesize
+    
+func animation_change(x,y):
+    if y == -1:
+        if x == -1:
+            play("Up-Left")
+        elif x == 1:
+            play("Up-Right")
+        else:
+            play("Up")
+    elif y == 1:
+        if x == -1:
+            play("Down-Left")
+        elif x == 1:
+            play("Down-Right")
+        else:
+            play("Down")
+    else:
+        if x == -1:
+            play("Left")
+        elif x == 1:
+            play("Right")
+        
+            
 
