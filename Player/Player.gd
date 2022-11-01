@@ -6,7 +6,6 @@ var player_tile
 
 ## todo:tilesizeはlevelにだけ持たせたい
 var tilesize = 16
-var inputOK:bool = true
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -15,40 +14,33 @@ func _ready():
 
 
 func _process(delta):
-    print(delta)
-    # 入力なんかカクつくから_processでやったほうがいいかも？
-    # _processを止めたい時はset_process(false)を使うといいらしい
-    if inputOK == true:
-        var _x = 0
-        var _y = 0
-        var diagonalonly : bool = false
-        var changedirection : bool = false
-        if Input.is_action_pressed("ui_left"):
-            _x -= 1
-        if Input.is_action_pressed("ui_right"):
-            _x += 1
-        if Input.is_action_pressed("ui_up"):
-            _y -= 1
-        if Input.is_action_pressed("ui_down"):
-            _y += 1
-        if Input.is_action_pressed("ui_diagonal_only"):
-            diagonalonly = true
-        if Input.is_action_pressed("ui_change_direction"):
-            changedirection = true
-            
-        if diagonalonly == false and (_x != 0 or _y != 0):
-            if changedirection == false:
-                try_move(_x, _y)
-            else:
-                animation_change(_x,_y)
-        elif diagonalonly == true and (_x != 0 and _y != 0):
-            if changedirection == false:
-                try_move(_x, _y)
-            else:
-                animation_change(_x,_y)
-
-        ## fix:たぶんここに書いちゃダメだと思う
-        #update()
+    var _x = 0
+    var _y = 0
+    var diagonalonly : bool = false
+    var changedirection : bool = false
+    if Input.is_action_pressed("ui_left"):
+        _x -= 1
+    if Input.is_action_pressed("ui_right"):
+        _x += 1
+    if Input.is_action_pressed("ui_up"):
+        _y -= 1
+    if Input.is_action_pressed("ui_down"):
+        _y += 1
+    if Input.is_action_pressed("ui_diagonal_only"):
+        diagonalonly = true
+    if Input.is_action_pressed("ui_change_direction"):
+        changedirection = true
+        
+    if diagonalonly == false and (_x != 0 or _y != 0):
+        if changedirection == false:
+            try_move(_x, _y)
+        else:
+            animation_change(_x,_y)
+    elif diagonalonly == true and (_x != 0 and _y != 0):
+        if changedirection == false:
+            try_move(_x, _y)
+        else:
+            animation_change(_x,_y)
 
 func try_move(dx, dy):
     var x = player_tile.x + dx
@@ -63,11 +55,11 @@ func try_move(dx, dy):
     update()
 
 func update():
-    inputOK = false
+    set_process(false)
     $Tween.interpolate_property(self, "position", null, player_tile * tilesize, 0.4, Tween.TRANS_LINEAR, Tween.EASE_IN_OUT)
     $Tween.start()
     yield($Tween,"tween_completed")
-    inputOK = true
+    set_process(true)
     #position = player_tile * tilesize
     
 func animation_change(x,y):
