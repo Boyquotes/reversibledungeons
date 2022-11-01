@@ -13,7 +13,6 @@ cell_size = Vector2( 16, 16 )
 format = 1
 
 [node name="Player" parent="." instance=ExtResource( 3 )]
-frame = 3
 
 [node name="Camera2D" type="Camera2D" parent="."]
 anchor_mode = 0
