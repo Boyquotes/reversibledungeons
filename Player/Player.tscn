@@ -1,14 +1,13 @@
-[gd_scene load_steps=3 format=2]
+[gd_scene load_steps=3 format=3 uid="uid://dvgpmrw538b4y"]
 
-[ext_resource path="res://Player/Player.tres" type="SpriteFrames" id=1]
-[ext_resource path="res://Player/Player.gd" type="Script" id=2]
+[ext_resource type="SpriteFrames" uid="uid://rvxdbxfsayix" path="res://Player/Player.tres" id="1"]
+[ext_resource type="Script" path="res://Player/Player.gd" id="2"]
 
-[node name="AnimatedSprite" type="AnimatedSprite"]
-frames = ExtResource( 1 )
-animation = "Down"
+[node name="AnimatedSprite" type="AnimatedSprite2D"]
+z_index = 1
+frames = ExtResource("1")
+animation = &"Down"
 playing = true
-script = ExtResource( 2 )
+script = ExtResource("2")
 
-[node name="Tween" type="Tween" parent="."]
-
-[node name="Position2D" type="Position2D" parent="."]
+[node name="Position2D" type="Marker2D" parent="."]

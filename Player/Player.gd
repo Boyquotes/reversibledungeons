@@ -1,4 +1,4 @@
-extends AnimatedSprite
+extends AnimatedSprite2D
 class_name Player
 
 
@@ -6,14 +6,14 @@ var player_tile
 
 ## todo:tilesizeはlevelにだけ持たせたい
 var tilesize = 16
+var tween:Tween
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
     player_tile = Vector2(5, 5)
-    position = player_tile * tilesize
+    position = player_tile * tilesize	
 
-
-func _process(delta):
+func _process(_delta):
     var _x = 0
     var _y = 0
     var diagonalonly : bool = false
@@ -56,9 +56,10 @@ func try_move(dx, dy):
 
 func update():
     set_process(false)
-    $Tween.interpolate_property(self, "position", null, player_tile * tilesize, 0.4, Tween.TRANS_LINEAR, Tween.EASE_IN_OUT)
-    $Tween.start()
-    yield($Tween,"tween_completed")
+    tween = get_tree().create_tween()
+    var _propetytween:PropertyTweener = tween.tween_property(self, "position", player_tile * tilesize, 0.3)
+    tween.play()
+    await tween.finished
     set_process(true)
     #position = player_tile * tilesize
     

@@ -1,21 +1,31 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=5 format=3 uid="uid://d3up6ai8x1cb3"]
 
-[ext_resource path="res://Level/TileSet/SampleTileSet.tres" type="TileSet" id=1]
-[ext_resource path="res://Level/Level.gd" type="Script" id=2]
-[ext_resource path="res://Player/Player.tscn" type="PackedScene" id=3]
+[ext_resource type="TileSet" uid="uid://oujiluxb5tdj" path="res://Level/TileSet/SampleTileSet.tres" id="1"]
+[ext_resource type="Script" path="res://Level/Level.gd" id="1_enjv2"]
+[ext_resource type="PackedScene" uid="uid://dvgpmrw538b4y" path="res://Player/Player.tscn" id="3"]
+[ext_resource type="PackedScene" uid="uid://27jenrm34ebs" path="res://Level/TileSet/Stair.tscn" id="4_rool0"]
 
 [node name="Dungeon" type="Node2D"]
-script = ExtResource( 2 )
+script = ExtResource("1_enjv2")
 
 [node name="TileMap" type="TileMap" parent="."]
-tile_set = ExtResource( 1 )
-cell_size = Vector2( 16, 16 )
-format = 1
+tile_set = ExtResource("1")
+format = 2
 
-[node name="Player" parent="." instance=ExtResource( 3 )]
-frame = 3
+[node name="Player" parent="." instance=ExtResource("3")]
+centered = false
 
 [node name="Camera2D" type="Camera2D" parent="."]
 anchor_mode = 0
 current = true
-zoom = Vector2( 0.2, 0.2 )
+zoom = Vector2(3, 3)
+
+[node name="RichTextLabel" type="RichTextLabel" parent="."]
+offset_left = 242.0
+offset_top = 147.0
+offset_right = 318.0
+offset_bottom = 172.0
+theme_override_font_sizes/normal_font_size = 16
+text = "4.0 Beta4"
+
+[node name="Stair" parent="." instance=ExtResource("4_rool0")]
