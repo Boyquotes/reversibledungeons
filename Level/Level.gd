@@ -25,28 +25,34 @@ func _ready():
         [1,0,0,0,0,0,0],
         [1,0,0,0,0,0],
     ]
-    buildLevelFromData(Vector2(10,10), mapdata)
+    buildLevelFromData(Vector2i(10,10), mapdata)
 
 # mapdataから地形を生成する
 # mapdata:生成する地形のデータ(int型2次元配列)
-func buildLevelFromData(size:Vector2, mapdata:Array):
+func buildLevelFromData(size:Vector2i, mapdata:Array):
     rooms.clear()
     map.clear()
     tile_map.clear()
     
-    enemy_pathfinding = AStar.new()
+    enemy_pathfinding = AStar3D.new()
+    var bluetile:Array = []
+    var whitetile:Array = []
     
     for x in range(size.x):
         map.append([])
         for y in range(size.y):
+            # todo:mapの使用用途なんだっけ?
             map[x].append(Tile.TileBlue)
-            tile_map.set_cell(x, y, Tile.TileBlue)
+            bluetile.append(Vector2i(x, y))
     
     for y in range(mapdata.size()):
         for x in range(mapdata[y].size()):
-            tile_map.set_cell(x, y, mapdata[y][x])
+            if mapdata[y][x] == 0:
+                whitetile.append(Vector2i(x, y))
             
-    tile_map.update_bitmask_region()
+    #tile_map.update_bitmask_region()
+    tile_map.set_cells_terrain_connect(0, bluetile, 0, 1)
+    tile_map.set_cells_terrain_connect(0, whitetile, 0, 0)
 
 func build_level():
     # Start with a blank map
@@ -57,14 +63,14 @@ func build_level():
     
     # このへんの処理はMapのテストでは使わないからコメントアウトしとこ
     # for enemy in enemies:
-    #     enemy.remove()
+    #     enemy.remove_at()
     # enemies.clear()
     
     # for item in items:
-    #     item.remove()
+    #     item.remove_at()
     # items.clear()
     
-    enemy_pathfinding = AStar.new()
+    enemy_pathfinding = AStar3D.new()
     
     # Randomize can effects
     
@@ -79,11 +85,11 @@ func build_level():
             # visibility_mapは今は使わない
             # visibility_map.set_cell(x, y, 0)
 
-    var free_regions = [Rect2(Vector2(2, 2), level_size - Vector2(4, 4))]
+    var free_regions = [Rect2(Vector2i(2, 2), level_size - Vector2i(4, 4))]
     var num_rooms = 6
     for _i in range(num_rooms):
         add_room(free_regions)
-        if free_regions.empty():
+        if free_regions.is_empty():
             break
             
     connect_rooms()
@@ -91,9 +97,9 @@ func build_level():
     
 
 func connect_rooms():
-    # Build an AStar graph of the area where we can add corridors
+    # Build an AStar3D graph of the area where we can add corridors
     
-    var stone_graph = AStar.new()
+    var stone_graph = AStar3D.new()
     var point_id = 0
     for x in range(level_size.x):
         for y in range(level_size.y):
@@ -112,9 +118,9 @@ func connect_rooms():
                     
                 point_id += 1
 
-    # Build an AStar graph of room connections
+    # Build an AStar3D graph of room connections
     
-    var room_graph = AStar.new()
+    var room_graph = AStar3D.new()
     point_id = 0
     for room in rooms:
         var room_center = room.position + room.size / 2
@@ -229,8 +235,8 @@ func add_random_connection(stone_graph, room_graph):
     set_tile(start_position.x, start_position.y, Tile.TileOrange)
     set_tile(end_position.x, end_position.y, Tile.TileOrange)
     
-    for position in path:
-        set_tile(position.x, position.y, Tile.TileOrange)
+    for pos in path:
+        set_tile(pos.x, pos.y, Tile.TileOrange)
     
     room_graph.connect_points(start_room_id, end_room_id)    
 
