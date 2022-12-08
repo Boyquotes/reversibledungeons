@@ -2,7 +2,7 @@ extends Node2D
 
 var rooms = []
 var map = []
-onready var tile_map = $TileMap
+@onready var tile_map = $TileMap
 enum Tile {TileOrange ,TileBlue}
 var level_size = Vector2(30, 30)
 const MIN_ROOM_DIMENSION = 5
