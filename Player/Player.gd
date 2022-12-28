@@ -1,17 +1,28 @@
-extends AnimatedSprite2D
+extends Node2D
 class_name Player
 
-
-var player_tile
-
-## todo:tilesizeはlevelにだけ持たせたい
-var tilesize = 16
+@onready var animation_scene = preload("res://Player/Player.tscn")
+var animation:AnimatedSprite2D
+var player_tile:Vector2
+var tilesize:int
 var tween:Tween
+var _level:Level
+const AnimationType:Array = [
+    ["Up-Left","Left","Down-Left"],
+    ["Up","None","Down"],
+    ["Up-Right","Right","Down-Right"],
+    ]
+
+func _init(DefaultTilesize:int, StartPosition:Vector2, level:Level):
+    tilesize = DefaultTilesize
+    player_tile = StartPosition
+    position = player_tile * tilesize
+    _level = level
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-    player_tile = Vector2(5, 5)
-    position = player_tile * tilesize	
+    animation = animation_scene.instantiate()
+    add_child(animation)
 
 func _process(_delta):
     var _x = 0
@@ -50,9 +61,9 @@ func try_move(dx, dy):
     # tile_type = map[x][y]    
     
     animation_change(dx,dy)
-    ## todo:このへんにマップの地形属性取得して云々したり壁に当たったら進めない処理書く
-    player_tile = Vector2(x, y)
-    update()
+    if can_move(x,y) == true:
+        player_tile = Vector2(x, y)
+        update()
 
 func update():
     set_process(false)
@@ -64,25 +75,16 @@ func update():
     #position = player_tile * tilesize
     
 func animation_change(x,y):
-    if y == -1:
-        if x == -1:
-            play("Up-Left")
-        elif x == 1:
-            play("Up-Right")
-        else:
-            play("Up")
-    elif y == 1:
-        if x == -1:
-            play("Down-Left")
-        elif x == 1:
-            play("Down-Right")
-        else:
-            play("Down")
+    var playanim = AnimationType[x+1][y+1]
+    if playanim != "None":
+        animation.play(playanim)
+        
+func can_move(x:int,y:int):
+    var cell = _level.get_map_cell(Vector2(x,y))
+    if(cell["tile"] != _level.Tile.Wall):
+        return true
     else:
-        if x == -1:
-            play("Left")
-        elif x == 1:
-            play("Right")
+        return false
         
             
 
