@@ -1,14 +1,16 @@
 extends Node2D
 class_name Level
-@onready var tile_map = $TileMap
-@onready var Stair:Sprite2D = $Stair
-@onready var text:Label = $Label2
+@onready var level = $CanvasLayer/Level
+@onready var tile_map = $CanvasLayer/Level/TileMap
+@onready var Stair:Sprite2D = $CanvasLayer/Level/Stair
+@onready var text:Label = $CanvasLayer/Label2
 # 後々のことを考えるとwall=0の方が安牌な気がする
 enum Tile {TileOrange ,TileBlue, Wall}
 const tilesize:int = 16
 var floornum:int
 var player:Player
 var cell:Array
+var _stair_ui:StairUI
 const mapdata = [
         [
             [],
@@ -35,11 +37,18 @@ func _init():
     floornum = 0
 
 func _ready():
-    randomize()
-    buildLevelFromData(Vector2i(15,10), mapdata[0])
-    player = Player.new(tilesize, Vector2(5,5), self)
-    add_child(player)
+    # randomize() 現時点では未使用だが、ランダム生成する時には要るかも
+    player = Player.new(tilesize, self)
+    level.add_child(player)
+    _stair_ui = StairUI.new(player, self, $CanvasLayer2)
+    new_floor()
     
+func new_floor():
+    buildLevelFromData(Vector2i(15,10), mapdata[floornum])
+    player.newfloor_warp(Vector2(5,5))
+    floornum += 1
+    pass
+
 func _process(_delta):
     # Playerのサイズが縦に長いので、1マス分判定を下げている
     if Stair.position == (player.position):
@@ -49,6 +58,7 @@ func _process(_delta):
 
 # mapdataから地形を生成する
 # mapdata:生成する地形のデータ(int型2次元配列)
+@warning_ignore(shadowed_variable)
 func buildLevelFromData(size:Vector2i, mapdata:Array):
     tile_map.clear()
     
@@ -91,7 +101,7 @@ func get_map_cell(point:Vector2):
         result["tile"] = Tile.Wall
     else:
         result["tile"] = cell[point.x][point.y]
-    if Stair.position == (player.position):
+    if Stair.position == point * tilesize:
         result["stair"] = true
     else:
         result["stair"] = false

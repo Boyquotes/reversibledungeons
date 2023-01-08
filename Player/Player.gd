@@ -7,22 +7,34 @@ var player_tile:Vector2
 var tilesize:int
 var tween:Tween
 var _level:Level
+#var isActive:bool
+var isActive:bool = true :set = _set_active
 const AnimationType:Array = [
     ["Up-Left","Left","Down-Left"],
     ["Up","None","Down"],
     ["Up-Right","Right","Down-Right"],
     ]
 
-func _init(DefaultTilesize:int, StartPosition:Vector2, level:Level):
+func _init(DefaultTilesize:int, level:Level):
     tilesize = DefaultTilesize
-    player_tile = StartPosition
-    position = player_tile * tilesize
     _level = level
+    self.scale = level.scale
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
     animation = animation_scene.instantiate()
     add_child(animation)
+
+func _set_active(flag:bool):
+    isActive = flag
+    _switch_process(isActive)
+
+func _switch_process(run:bool):
+    if(run == false):
+        set_process(false)
+    else:
+        if(isActive == true):
+            set_process(true)
 
 func _process(_delta):
     var _x = 0
@@ -66,12 +78,12 @@ func try_move(dx, dy):
         update()
 
 func update():
-    set_process(false)
+    _switch_process(false)
     tween = get_tree().create_tween()
     var _propetytween:PropertyTweener = tween.tween_property(self, "position", player_tile * tilesize, 0.3)
     tween.play()
     await tween.finished
-    set_process(true)
+    _switch_process(true)
     #position = player_tile * tilesize
     
 func animation_change(x,y):
@@ -81,10 +93,18 @@ func animation_change(x,y):
         
 func can_move(x:int,y:int):
     var cell = _level.get_map_cell(Vector2(x,y))
-    if(cell["tile"] != _level.Tile.Wall):
-        return true
-    else:
+    if(cell["tile"] == _level.Tile.Wall):
         return false
+    if(cell["stair"] == true):
+        # 読み込み方めんどくさすぎる気がする…
+        _level._stair_ui.open_ui()
+        pass
+    return true
+
+func newfloor_warp(position:Vector2):
+    self.player_tile = position
+    self.position = position * tilesize
+    pass
         
             
 
