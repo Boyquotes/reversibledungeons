@@ -9,6 +9,11 @@
 config_version=5
 
 _global_script_classes=[{
+"base": "RefCounted",
+"class": &"GoalUI",
+"language": &"GDScript",
+"path": "res://Level/GoalUI.gd"
+}, {
 "base": "Node2D",
 "class": &"Level",
 "language": &"GDScript",
@@ -25,6 +30,7 @@ _global_script_classes=[{
 "path": "res://Level/StairUI.gd"
 }]
 _global_script_class_icons={
+"GoalUI": "",
 "Level": "",
 "Player": "",
 "StairUI": ""

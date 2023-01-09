@@ -96,9 +96,7 @@ func can_move(x:int,y:int):
     if(cell["tile"] == _level.Tile.Wall):
         return false
     if(cell["stair"] == true):
-        # 読み込み方めんどくさすぎる気がする…
-        _level._stair_ui.open_ui()
-        pass
+        _level.open_StairUI()
     return true
 
 func newfloor_warp(position:Vector2):

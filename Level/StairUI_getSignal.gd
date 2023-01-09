@@ -1,9 +1,11 @@
 extends Control
-var baseContainer:StairUI
+# StairUI, GoalUI
+var baseContainer
 
 # インスタンス管理用クラスからだとシグナルが受信できないので、
 # シグナル受信用にこれを作成
 func _ready():
+    assert(baseContainer)
     pass
 
 

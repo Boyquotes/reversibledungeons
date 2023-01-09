@@ -11,6 +11,7 @@ var floornum:int
 var player:Player
 var cell:Array
 var _stair_ui:StairUI
+var _goal_ui:GoalUI
 const mapdata = [
         [
             [],
@@ -30,9 +31,12 @@ const mapdata = [
             [1,1,0,0,0,0,0,0,0,1],
             [1,1,0,0,0,0,0,0,0,0],
             [1,1,0,0,0,0,0,0,0,0],
-            [1,1,0,0,0,0,0,0,0,0]
+            [1,1,0,0,0,0,0,0,0,0],
+            [2,2,2,2,2,0,2,2,2,2],
+            [2,2,2,2,2,0,0,0,2,2]
         ]
     ]
+
 func _init():
     floornum = 0
 
@@ -41,6 +45,7 @@ func _ready():
     player = Player.new(tilesize, self)
     level.add_child(player)
     _stair_ui = StairUI.new(player, self, $CanvasLayer2)
+    _goal_ui = GoalUI.new(player, self, $CanvasLayer2)
     new_floor()
     
 func new_floor():
@@ -90,9 +95,9 @@ func buildLevelFromData(size:Vector2i, mapdata:Array):
                 cell[x][y]=Tile.Wall
             
     #tile_map.update_bitmask_region()
-    tile_map.set_cells_terrain_connect(0, bluetile, 0, Tile.TileBlue)
-    tile_map.set_cells_terrain_connect(0, whitetile, 0, Tile.TileOrange)
-    tile_map.set_cells_terrain_connect(0, wall, 0, Tile.Wall)
+    tile_map.set_cells_terrain_connect(0, bluetile, 0, Tile.TileBlue, false)
+    tile_map.set_cells_terrain_connect(0, whitetile, 0, Tile.TileOrange, false)
+    tile_map.set_cells_terrain_connect(0, wall, 0, Tile.Wall, false)
     Stair.position = Vector2(7,7) * tilesize
 
 func get_map_cell(point:Vector2):
@@ -106,3 +111,11 @@ func get_map_cell(point:Vector2):
     else:
         result["stair"] = false
     return result
+
+func open_StairUI():
+    # 読み込み方めんどくさすぎる気がする…
+    if floornum >= mapdata.size():
+        _goal_ui.open_ui()
+    else:
+        _stair_ui.open_ui()
+    pass
