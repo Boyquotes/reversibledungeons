@@ -1,9 +1,10 @@
 class_name StairUI
-const _ui_scene = preload("res://Level/StairUI.tscn")
+var _ui_scene:PackedScene
 var _instance:Control
 var _player:Player
 var _level:Level
 func _init(player:Player, level:Level, canvas:CanvasLayer):
+    _ui_scene = preload("res://Level/StairUI.tscn")
     _player = player
     _level = level
     _instance = _ui_scene.instantiate()

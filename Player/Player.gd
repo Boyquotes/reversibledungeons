@@ -7,7 +7,6 @@ var player_tile:Vector2
 var tilesize:int
 var tween:Tween
 var _level:Level
-#var isActive:bool
 var isActive:bool = true :set = _set_active
 const AnimationType:Array = [
     ["Up-Left","Left","Down-Left"],
@@ -20,7 +19,6 @@ func _init(DefaultTilesize:int, level:Level):
     _level = level
     self.scale = level.scale
 
-# Called when the node enters the scene tree for the first time.
 func _ready():
     animation = animation_scene.instantiate()
     add_child(animation)
@@ -68,10 +66,6 @@ func _process(_delta):
 func try_move(dx, dy):
     var x = player_tile.x + dx
     var y = player_tile.y + dy
-    ## todo:マップのサイズ取得してマップの外に出れないようにする
-    # if x >= 0 && x < level_size.x && y >= 0 && y < level_size.y:
-    # tile_type = map[x][y]    
-    
     animation_change(dx,dy)
     if can_move(x,y) == true:
         player_tile = Vector2(x, y)
@@ -84,7 +78,6 @@ func update():
     tween.play()
     await tween.finished
     _switch_process(true)
-    #position = player_tile * tilesize
     
 func animation_change(x,y):
     var playanim = AnimationType[x+1][y+1]
@@ -95,7 +88,9 @@ func can_move(x:int,y:int):
     var cell = _level.get_map_cell(Vector2(x,y))
     if(cell["tile"] == _level.Tile.Wall):
         return false
+    #todo:ここに角抜け防止処理
     if(cell["stair"] == true):
+        #todo:本来はupdate()の後で呼ばれるべき
         _level.open_StairUI()
     return true
 
