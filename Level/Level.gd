@@ -9,6 +9,9 @@ enum Tile {TileOrange ,TileBlue, Wall}
 const tilesize:int = 16
 var floornum:int
 var player:Player
+var enemy:Enemy
+var life_manager:LifeManage
+var turn_manager:TurnManage
 var cell:Array
 var _stair_ui:StairUI
 var _goal_ui:GoalUI
@@ -42,15 +45,24 @@ func _init():
 
 func _ready():
     # randomize() 現時点では未使用だが、ランダム生成する時には要るかも
+    life_manager = LifeManage.new()
     player = Player.new(tilesize, self)
     level.add_child(player)
+    enemy = Enemy.new(tilesize, self)
+    level.add_child(enemy)
+    life_manager.append(player)
+    life_manager.append(enemy)
     _stair_ui = StairUI.new(player, self, $CanvasLayer2)
     _goal_ui = GoalUI.new(player, self, $CanvasLayer2)
+    turn_manager = TurnManage.new(life_manager, $CanvasLayer/Label4)
+    level.add_child(turn_manager)
     new_floor()
     
 func new_floor():
     buildLevelFromData(Vector2i(15,10), mapdata[floornum])
     player.newfloor_warp(Vector2(5,5))
+    # todo:Enemyが湧く処理がベタ打ちなので倒してから降りるとバグる
+    enemy.newfloor_warp(Vector2(3,5))
     floornum += 1
     pass
 
@@ -101,12 +113,18 @@ func buildLevelFromData(size:Vector2i, mapdata:Array):
     Stair.position = Vector2(7,7) * tilesize
 
 func get_map_cell(point:Vector2):
+    var tilepos:Vector2 = point * tilesize
     var result = {}
+    result["unit"] = null
+    for e in life_manager.get_alive_unit():
+        if e.player_tile == point:
+            result["unit"] = e
+            break
     if point.x >= cell.size() || point.y >= cell[point.x].size():
         result["tile"] = Tile.Wall
     else:
         result["tile"] = cell[point.x][point.y]
-    if Stair.position == point * tilesize:
+    if Stair.position == tilepos:
         result["stair"] = true
     else:
         result["stair"] = false

@@ -7,6 +7,7 @@ var player_tile:Vector2
 var tilesize:int
 var tween:Tween
 var _level:Level
+var myturn:bool
 var isActive:bool = true :set = _set_active
 const AnimationType:Array = [
     ["Up-Left","Left","Down-Left"],
@@ -35,6 +36,8 @@ func _switch_process(run:bool):
             set_process(true)
 
 func _process(_delta):
+    if (myturn == false):
+        return
     var _x = 0
     var _y = 0
     var diagonalonly : bool = false
@@ -51,6 +54,9 @@ func _process(_delta):
         diagonalonly = true
     if Input.is_action_pressed("ui_change_direction"):
         changedirection = true
+    if Input.is_action_pressed("ui_accept"):
+        Attack()
+        pass
         
     if diagonalonly == false and (_x != 0 or _y != 0):
         if changedirection == false:
@@ -70,6 +76,8 @@ func try_move(dx, dy):
     if can_move(x,y) == true:
         player_tile = Vector2(x, y)
         update()
+        # todo:仮設置 将来的に外す
+        Action_end()
 
 func update():
     _switch_process(false)
@@ -88,6 +96,8 @@ func can_move(x:int,y:int):
     var cell = _level.get_map_cell(Vector2(x,y))
     if(cell["tile"] == _level.Tile.Wall):
         return false
+    if(cell["unit"] != null):
+        return false
     #todo:ここに角抜け防止処理
     if(cell["stair"] == true):
         #todo:本来はupdate()の後で呼ばれるべき
@@ -99,5 +109,43 @@ func newfloor_warp(position:Vector2):
     self.position = position * tilesize
     pass
         
-            
+func Attack():
+    var direction:Vector2 = Get_animation()
+    var x = player_tile.x + direction.x
+    var y = player_tile.y + direction.y
+    var cell = _level.get_map_cell(Vector2(x,y))
+    if(cell["unit"] != null):
+        cell["unit"].Damage()
+    _switch_process(false)
+    # todo:ここから下仮設置 将来的に外す
+    # 暴発対策にupdate()もどきを入れておいた
+    tween = get_tree().create_tween()
+    var _propetytween:PropertyTweener = tween.tween_property(self, "position", player_tile * tilesize, 0.2)
+    tween.play()
+    await tween.finished
+    _switch_process(true)
+    Action_end()
+    
+func Get_animation():
+    var name = animation.animation
+    for x in range(AnimationType.size()):
+        var y = AnimationType[x].find(name)
+        if y != -1:
+            return Vector2(x-1,y-1)
+    return Vector2(0,0)
 
+func Damage():
+    # メソッドチェーンをやめろ！！！！
+    _level.life_manager.death(self)
+    queue_free()
+    _level.get_tree().change_scene_to_file("res://Title/Title.tscn")
+
+func Action():
+    myturn = true
+    
+func Action_end():
+    print_debug("Player.Action_end")
+    myturn = false
+    # メソッドチェーンをやめろ！！！！
+    _level.turn_manager.action_end()
+    pass
