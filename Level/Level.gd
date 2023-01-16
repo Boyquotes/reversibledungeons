@@ -129,6 +129,10 @@ func get_map_cell(point:Vector2):
     else:
         result["stair"] = false
     return result
+    
+func get_position_diff_from_player(point:Vector2):
+    return player.player_tile - point
+    pass
 
 func open_StairUI():
     # 読み込み方めんどくさすぎる気がする…
