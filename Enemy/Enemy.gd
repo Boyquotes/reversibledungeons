@@ -56,24 +56,24 @@ func newfloor_warp(position:Vector2):
     self.position = position * tilesize
     pass
     
-func Attack(dx,dy):
+func attack(dx,dy):
     animation_change(dx, dy)
     var x = player_tile.x + dx
     var y = player_tile.y + dy
     var cell = _level.get_map_cell(Vector2(x,y))
     if(cell["unit"] != null):
-        cell["unit"].Damage()
+        cell["unit"].damage()
 
-func Damage():
+func damage():
     # メソッドチェーンをやめろ！！！！
     # ここsignalでもいい気がする
     _level.life_manager.death(self)
     queue_free()
     
-func Action():
+func action():
     var diff = _level.get_position_diff_from_player(player_tile)
     if(abs(diff.x) <= 1 && abs(diff.y) <= 1):
-        Attack(diff.x,diff.y)
+        attack(diff.x,diff.y)
     else:
         var mx = clamp(diff.x, -1, 1)
         var my = clamp(diff.y, -1, 1)

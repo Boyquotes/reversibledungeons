@@ -55,7 +55,7 @@ func _process(_delta):
     if Input.is_action_pressed("ui_change_direction"):
         changedirection = true
     if Input.is_action_pressed("ui_accept"):
-        Attack()
+        attack()
         pass
         
     if diagonalonly == false and (_x != 0 or _y != 0):
@@ -77,7 +77,7 @@ func try_move(dx, dy):
         player_tile = Vector2(x, y)
         update()
         # todo:仮設置 将来的に外す
-        Action_end()
+        action_end()
 
 func update():
     _switch_process(false)
@@ -94,14 +94,14 @@ func animation_change(x,y):
         
 func can_move(x:int,y:int):
     var cell = _level.get_map_cell(Vector2(x,y))
-    if(cell["tile"] == _level.Tile.Wall):
+    if cell["tile"] == _level.Tile.Wall:
         return false
-    if(cell["unit"] != null):
+    if cell["unit"] != null:
         return false
     #todo:ここに角抜け防止処理
     if(cell["stair"] == true):
         #todo:本来はupdate()の後で呼ばれるべき
-        _level.open_StairUI()
+        _level.open_stair_ui()
     return true
 
 func newfloor_warp(position:Vector2):
@@ -109,8 +109,8 @@ func newfloor_warp(position:Vector2):
     self.position = position * tilesize
     pass
         
-func Attack():
-    var direction:Vector2 = Get_animation()
+func attack():
+    var direction:Vector2 = get_animation()
     var x = player_tile.x + direction.x
     var y = player_tile.y + direction.y
     var cell = _level.get_map_cell(Vector2(x,y))
@@ -124,9 +124,9 @@ func Attack():
     tween.play()
     await tween.finished
     _switch_process(true)
-    Action_end()
+    action_end()
     
-func Get_animation():
+func get_animation():
     var name = animation.animation
     for x in range(AnimationType.size()):
         var y = AnimationType[x].find(name)
@@ -134,16 +134,16 @@ func Get_animation():
             return Vector2(x-1,y-1)
     return Vector2(0,0)
 
-func Damage():
+func damage():
     # メソッドチェーンをやめろ！！！！
     _level.life_manager.death(self)
     queue_free()
     _level.get_tree().change_scene_to_file("res://Title/Title.tscn")
 
-func Action():
+func action():
     myturn = true
     
-func Action_end():
+func action_end():
     print_debug("Player.Action_end")
     myturn = false
     # メソッドチェーンをやめろ！！！！

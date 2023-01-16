@@ -134,7 +134,7 @@ func get_position_diff_from_player(point:Vector2):
     return player.player_tile - point
     pass
 
-func open_StairUI():
+func open_stair_ui():
     # 読み込み方めんどくさすぎる気がする…
     if floornum >= mapdata.size():
         _goal_ui.open_ui()

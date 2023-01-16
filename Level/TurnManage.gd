@@ -29,7 +29,7 @@ func action_end():
         else:
             return
     # todo:多分生存してるUnitが0だとバグる
-    next.Action()
+    next.action()
 
 # たぶんこれUnitをReturnした方が行儀良い
 func next_turn():
