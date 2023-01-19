@@ -115,7 +115,7 @@ func attack():
     var y = player_tile.y + direction.y
     var cell = _level.get_map_cell(Vector2(x,y))
     if(cell["unit"] != null):
-        cell["unit"].Damage()
+        cell["unit"].damage()
     _switch_process(false)
     # todo:ここから下仮設置 将来的に外す
     # 暴発対策にupdate()もどきを入れておいた
@@ -144,7 +144,6 @@ func action():
     myturn = true
     
 func action_end():
-    print_debug("Player.Action_end")
     myturn = false
     # メソッドチェーンをやめろ！！！！
     _level.turn_manager.action_end()

@@ -1,7 +1,9 @@
-[gd_scene load_steps=6 format=3 uid="uid://d3up6ai8x1cb3"]
+[gd_scene load_steps=8 format=3 uid="uid://d3up6ai8x1cb3"]
 
 [ext_resource type="Script" path="res://Level/Level.gd" id="1_8a6d7"]
+[ext_resource type="Script" path="res://Level/DungeonCamera.gd" id="2_gdbaa"]
 [ext_resource type="TileSet" uid="uid://oujiluxb5tdj" path="res://Level/TileSet/SampleTileSet.tres" id="2_usv2u"]
+[ext_resource type="Theme" uid="uid://c7ymobu6xvq2m" path="res://Theme/ThemeSample.tres" id="2_vg5tb"]
 [ext_resource type="PackedScene" uid="uid://27jenrm34ebs" path="res://Level/TileSet/Stair.tscn" id="3_jrvhg"]
 [ext_resource type="Script" path="res://Version.gd" id="4_w3px3"]
 [ext_resource type="Script" path="res://Level/inputCapture.gd" id="5_y44m6"]
@@ -11,54 +13,69 @@ script = ExtResource("1_8a6d7")
 
 [node name="Camera2D" type="Camera2D" parent="."]
 anchor_mode = 0
+ignore_rotation = false
 current = true
+position_smoothing_enabled = true
+drag_horizontal_enabled = true
+drag_vertical_enabled = true
+editor_draw_limits = true
+script = ExtResource("2_gdbaa")
 
-[node name="CanvasLayer" type="CanvasLayer" parent="."]
+[node name="CanvasLayer" type="CanvasLayer" parent="Camera2D"]
+layer = 2
 
-[node name="Level" type="Node2D" parent="CanvasLayer"]
-visibility_layer = 2
-scale = Vector2(3, 3)
-
-[node name="TileMap" type="TileMap" parent="CanvasLayer/Level"]
-tile_set = ExtResource("2_usv2u")
-format = 2
-
-[node name="Stair" parent="CanvasLayer/Level" instance=ExtResource("3_jrvhg")]
-
-[node name="Label" type="Label" parent="CanvasLayer"]
+[node name="Label" type="Label" parent="Camera2D/CanvasLayer"]
 offset_top = 481.0
 offset_right = 959.0
 offset_bottom = 517.0
+theme = ExtResource("2_vg5tb")
 horizontal_alignment = 2
 vertical_alignment = 2
 script = ExtResource("4_w3px3")
 
-[node name="Label2" type="Label" parent="CanvasLayer"]
+[node name="Label2" type="Label" parent="Camera2D/CanvasLayer"]
 offset_top = 1.0
 offset_right = 960.0
 offset_bottom = 79.0
+theme = ExtResource("2_vg5tb")
 horizontal_alignment = 2
 
-[node name="Label3" type="Label" parent="CanvasLayer"]
+[node name="Label3" type="Label" parent="Camera2D/CanvasLayer"]
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_top = -23.0
+offset_top = -34.0
 grow_horizontal = 2
 grow_vertical = 0
+theme = ExtResource("2_vg5tb")
 theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_font_sizes/font_size = 24
 script = ExtResource("5_y44m6")
 
-[node name="Label4" type="Label" parent="CanvasLayer"]
+[node name="Label4" type="Label" parent="Camera2D/CanvasLayer"]
 anchor_top = 0.5
 anchor_right = 1.0
 anchor_bottom = 0.5
 offset_top = -11.5
 offset_bottom = 11.5
-grow_horizontal = 2
-grow_vertical = 2
+theme = ExtResource("2_vg5tb")
 horizontal_alignment = 2
 
-[node name="CanvasLayer2" type="CanvasLayer" parent="."]
-layer = 2
+[node name="Line2D" type="Line2D" parent="Camera2D/CanvasLayer"]
+points = PackedVector2Array(480, 0, 480, 520)
+width = 1.0
+default_color = Color(0, 0, 0, 1)
+
+[node name="Line2D2" type="Line2D" parent="Camera2D/CanvasLayer"]
+points = PackedVector2Array(0, 260, 960, 260)
+width = 1.0
+default_color = Color(0, 0, 0, 1)
+
+[node name="Level" type="Node2D" parent="."]
+visibility_layer = 2
+scale = Vector2(3, 3)
+
+[node name="TileMap" type="TileMap" parent="Level"]
+tile_set = ExtResource("2_usv2u")
+format = 2
+
+[node name="Stair" parent="Level" instance=ExtResource("3_jrvhg")]

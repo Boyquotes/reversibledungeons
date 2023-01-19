@@ -46,9 +46,6 @@ func can_move(x:int,y:int):
     if(cell["tile"] == _level.Tile.Wall):
         return false
     #todo:ここに角抜け防止処理
-    if(cell["stair"] == true):
-        #todo:本来はupdate()の後で呼ばれるべき
-        _level.open_StairUI()
     return true
 
 func newfloor_warp(position:Vector2):

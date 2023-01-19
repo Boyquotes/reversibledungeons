@@ -24,10 +24,11 @@ func action_end():
         next_turn()
         # このif文無いと敵の攻撃でスタックオーバーフローする
         # Playerが死んだ時にtrueの判定させたい
-        if(unit.size() > 1):
-            next = unit.pop_back()
-        else:
-            return
+        #if(unit.size() > 1):
+            #next = unit.pop_back()
+        next = unit.pop_back()
+        #else:
+            #return
     # todo:多分生存してるUnitが0だとバグる
     next.action()
 
