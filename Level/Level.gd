@@ -1,9 +1,10 @@
 extends Node2D
 class_name Level
-@onready var level = $CanvasLayer/Level
-@onready var tile_map = $CanvasLayer/Level/TileMap
-@onready var Stair:Sprite2D = $CanvasLayer/Level/Stair
-@onready var text:Label = $CanvasLayer/Label2
+@onready var level = $Level
+@onready var tile_map = $Level/TileMap
+@onready var Stair:Sprite2D = $Level/Stair
+@onready var text:Label = $Camera2D/CanvasLayer/Label2
+@onready var Camera:Camera2D = $Camera2D
 # 後々のことを考えるとwall=0の方が安牌な気がする
 enum Tile {TileOrange ,TileBlue, Wall}
 const tilesize:int = 16
@@ -18,15 +19,25 @@ var _goal_ui:GoalUI
 const mapdata = [
         [
             [],
-            [2,0,0,0,0,0,0,0,0,0,0,0,0,0],
-            [2,0,0,0,0,0,0,0,0,0,0,1,1,0],
-            [2,0,0,0,0,0,0,0,0,0,0,1,1,1,1],
-            [2,0,0,0,0,0,0,0,0,0,0,0,1,1,1],
-            [2,0,0,0,0,0,0,0,0,0,0,0,0,0],
-            [2,0,0,0,0,0,0,0,0,0,0,0,0,0],
-            [2,0,0,0,0,0,0,0,0,0,0,0,0,0],
-            [2,0,0,0,0,0,0,0,0,0,0,0,0,0],
-            [1]
+            [2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+            [2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0],
+            [2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1],
+            [2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1],
+            [2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+            [2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+            [2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+            [2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+            [2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+            [2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0],
+            [2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1],
+            [2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1],
+            [2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+            [2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+            [2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+            [2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+            [2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+            [2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,0,2,2,2,2,2],
+            [2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,0,2,2,2,2,2]
         ],
         [
             [],
@@ -52,14 +63,17 @@ func _ready():
     level.add_child(enemy)
     life_manager.append(player)
     life_manager.append(enemy)
-    _stair_ui = StairUI.new(player, self, $CanvasLayer2)
-    _goal_ui = GoalUI.new(player, self, $CanvasLayer2)
-    turn_manager = TurnManage.new(life_manager, $CanvasLayer/Label4)
+    _stair_ui = StairUI.new(player, self, $Camera2D/CanvasLayer)
+    _goal_ui = GoalUI.new(player, self, $Camera2D/CanvasLayer)
+    turn_manager = TurnManage.new(life_manager, $Camera2D/CanvasLayer/Label4)
     level.add_child(turn_manager)
+    
+    Camera.level = self
+    Camera.player = player
     new_floor()
     
 func new_floor():
-    buildLevelFromData(Vector2i(15,10), mapdata[floornum])
+    buildLevelFromData(Vector2i(30,20), mapdata[floornum])
     player.newfloor_warp(Vector2(5,5))
     # todo:Enemyが湧く処理がベタ打ちなので倒してから降りるとバグる
     enemy.newfloor_warp(Vector2(3,5))
@@ -67,7 +81,6 @@ func new_floor():
     pass
 
 func _process(_delta):
-    # Playerのサイズが縦に長いので、1マス分判定を下げている
     if Stair.position == (player.position):
         text.text = "(階段)({0},{1})".format([player.player_tile.x, player.player_tile.y])
     else:
