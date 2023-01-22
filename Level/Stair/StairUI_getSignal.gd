@@ -7,6 +7,10 @@ func _ready():
     assert(baseContainer)
     pass
 
+func _process(delta):
+    if Input.is_action_just_released("ui_cancel"):
+        if self.visible == true:
+            baseContainer.press_nobutton()
 
 func _on_yes_pressed():
     baseContainer.press_yesbutton()

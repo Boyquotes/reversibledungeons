@@ -2,12 +2,13 @@ extends Node2D
 class_name Player
 
 @onready var animation_scene = preload("res://Player/Player.tscn")
+var _menu_ui:DungeonMenuUI
 var animation:AnimatedSprite2D
 var player_tile:Vector2
 var tilesize:int
-var tween:Tween
 var _level:Level
 var myturn:bool
+var closed:bool
 var isActive:bool = true :set = _set_active
 const AnimationType:Array = [
     ["Up-Left","Left","Down-Left"],
@@ -15,9 +16,10 @@ const AnimationType:Array = [
     ["Up-Right","Right","Down-Right"],
     ]
 
-func _init(DefaultTilesize:int, level:Level):
+func _init(DefaultTilesize:int, level:Level, canvas:CanvasLayer):
     tilesize = DefaultTilesize
     _level = level
+    _menu_ui = DungeonMenuUI.new(self, canvas)
     self.scale = level.scale
 
 func _ready():
@@ -34,9 +36,16 @@ func _switch_process(run:bool):
     else:
         if(isActive == true):
             set_process(true)
+            
+func close_ui():
+    isActive = true
+    closed = true
+    
 
 func _process(_delta):
-    if (myturn == false):
+    if myturn == false: return
+    if closed == true:
+        closed = false
         return
     var _x = 0
     var _y = 0
@@ -54,10 +63,15 @@ func _process(_delta):
         diagonalonly = true
     if Input.is_action_pressed("ui_change_direction"):
         changedirection = true
+    if Input.is_action_just_released("ui_cancel"):
+        _menu_ui.open_ui()
+        return
     if Input.is_action_pressed("ui_accept"):
         attack()
-        pass
-        
+        return
+    # キャンセル+移動同時押しのTween無視対策
+    if Input.is_action_pressed("ui_cancel"): return
+       
     if diagonalonly == false and (_x != 0 or _y != 0):
         if changedirection == false:
             try_move(_x, _y)
@@ -81,7 +95,7 @@ func try_move(dx, dy):
 
 func update():
     _switch_process(false)
-    tween = get_tree().create_tween()
+    var tween = get_tree().create_tween()
     var _propetytween:PropertyTweener = tween.tween_property(self, "position", player_tile * tilesize, 0.3)
     tween.play()
     await tween.finished
@@ -119,10 +133,7 @@ func attack():
     _switch_process(false)
     # todo:ここから下仮設置 将来的に外す
     # 暴発対策にupdate()もどきを入れておいた
-    tween = get_tree().create_tween()
-    var _propetytween:PropertyTweener = tween.tween_property(self, "position", player_tile * tilesize, 0.2)
-    tween.play()
-    await tween.finished
+    await get_tree().create_timer(0.2).timeout
     _switch_process(true)
     action_end()
     

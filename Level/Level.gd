@@ -57,7 +57,7 @@ func _init():
 func _ready():
     # randomize() 現時点では未使用だが、ランダム生成する時には要るかも
     life_manager = LifeManage.new()
-    player = Player.new(tilesize, self)
+    player = Player.new(tilesize, self, $Camera2D/CanvasLayer)
     level.add_child(player)
     enemy = Enemy.new(tilesize, self)
     level.add_child(enemy)
