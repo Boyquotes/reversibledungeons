@@ -8,52 +8,6 @@
 
 config_version=5
 
-_global_script_classes=[{
-"base": "Node2D",
-"class": &"Enemy",
-"language": &"GDScript",
-"path": "res://Enemy/Enemy.gd"
-}, {
-"base": "StairUI",
-"class": &"GoalUI",
-"language": &"GDScript",
-"path": "res://Level/GoalUI.gd"
-}, {
-"base": "Node2D",
-"class": &"Level",
-"language": &"GDScript",
-"path": "res://Level/Level.gd"
-}, {
-"base": "RefCounted",
-"class": &"LifeManage",
-"language": &"GDScript",
-"path": "res://Level/LifeManage.gd"
-}, {
-"base": "Node2D",
-"class": &"Player",
-"language": &"GDScript",
-"path": "res://Player/Player.gd"
-}, {
-"base": "RefCounted",
-"class": &"StairUI",
-"language": &"GDScript",
-"path": "res://Level/StairUI.gd"
-}, {
-"base": "Node2D",
-"class": &"TurnManage",
-"language": &"GDScript",
-"path": "res://Level/TurnManage.gd"
-}]
-_global_script_class_icons={
-"Enemy": "",
-"GoalUI": "",
-"Level": "",
-"LifeManage": "",
-"Player": "",
-"StairUI": "",
-"TurnManage": ""
-}
-
 [application]
 
 config/name="Reversible Dungeons"
@@ -70,6 +24,10 @@ window/size/width=1920
 window/size/height=1040
 window/size/test_width=960
 window/size/test_height=520
+
+[editor]
+
+export/convert_text_resources_to_binary=true
 
 [input]
 

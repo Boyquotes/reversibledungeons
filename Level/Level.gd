@@ -5,6 +5,7 @@ class_name Level
 @onready var Stair:Sprite2D = $Level/Stair
 @onready var text:Label = $Camera2D/CanvasLayer/Label2
 @onready var Camera:Camera2D = $Camera2D
+@onready var GeneralWindow:GeneralWindow = $Camera2D/CanvasLayer/GeneralWindow
 # 後々のことを考えるとwall=0の方が安牌な気がする
 enum Tile {TileOrange ,TileBlue, Wall}
 const tilesize:int = 16
@@ -144,6 +145,7 @@ func get_map_cell(point:Vector2):
     return result
     
 func get_position_diff_from_player(point:Vector2):
+    GeneralWindow.show_message("ターン数:{1}, 距離：{0}".format([player.player_tile - point, turn_manager.turn]))
     return player.player_tile - point
     pass
 
