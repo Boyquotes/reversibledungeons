@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3 uid="uid://dvgpmrw538b4y"]
+[gd_scene load_steps=2 format=3]
 
-[ext_resource type="SpriteFrames" uid="uid://rvxdbxfsayix" path="res://Player/Player.tres" id="1"]
+[ext_resource type="SpriteFrames" path="res://Unit/Player/Player.tres" id="1"]
+
 
 [node name="AnimatedSprite" type="AnimatedSprite2D"]
 z_index = 1

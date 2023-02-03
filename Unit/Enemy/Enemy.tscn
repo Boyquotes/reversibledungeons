@@ -1,6 +1,6 @@
-[gd_scene load_steps=2 format=3 uid="uid://d3vgntasj5vep"]
+[gd_scene load_steps=2 format=3]
 
-[ext_resource type="SpriteFrames" uid="uid://cxxvkgnpsr7bu" path="res://Enemy/Enemy.tres" id="1_h0g8s"]
+[ext_resource type="SpriteFrames" path="res://Unit/Enemy/Enemy.tres" id="1_h0g8s"]
 
 [node name="AnimatedSprite" type="AnimatedSprite2D"]
 z_index = 1

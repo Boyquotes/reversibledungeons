@@ -1,31 +1,16 @@
-extends Node2D
+extends Unit
 class_name Player
 
-@onready var animation_scene = preload("res://Player/Player.tscn")
 var _menu_ui:DungeonMenuUI
-var animation:AnimatedSprite2D
-var player_tile:Vector2
-var tilesize:int
-var _level:Level
 var myturn:bool
 var closed:bool
 var isActive:bool = true :set = _set_active
-const AnimationType:Array = [
-    ["Up-Left","Left","Down-Left"],
-    ["Up","None","Down"],
-    ["Up-Right","Right","Down-Right"],
-    ]
 
-func _init(DefaultTilesize:int, level:Level, canvas:CanvasLayer):
-    tilesize = DefaultTilesize
+func _init(level:Level, canvas:CanvasLayer):
+    animation_scene = preload("res://Unit/Player/Player.tscn")
     _level = level
     _menu_ui = DungeonMenuUI.new(self, canvas)
     self.scale = level.scale
-
-func _ready():
-    animation = animation_scene.instantiate()
-    add_child(animation)
-    animation.play()
 
 func _set_active(flag:bool):
     isActive = flag
@@ -75,40 +60,48 @@ func _process(_delta):
        
     if diagonalonly == false and (_x != 0 or _y != 0):
         if changedirection == false:
-            try_move(_x, _y)
+            try_walk(_x, _y)
         else:
             animation_change(_x,_y)
     elif diagonalonly == true and (_x != 0 and _y != 0):
         if changedirection == false:
-            try_move(_x, _y)
+            try_walk(_x, _y)
         else:
             animation_change(_x,_y)
 
-func try_move(dx, dy):
-    var x = player_tile.x + dx
-    var y = player_tile.y + dy
+func try_walk(dx:int, dy:int):
+    var x = position_onlevel.x + dx
+    var y = position_onlevel.y + dy
     animation_change(dx,dy)
-    if can_move(x,y) == true:
-        player_tile = Vector2(x, y)
-        update()
-        # todo:仮設置 将来的に外す
+    if can_move(Vector2(x, y)) == true:
+        update_position(Vector2(x, y))
         action_end()
+    pass
 
-func update():
+func update_position(destination:Vector2):
     _switch_process(false)
-    var tween = get_tree().create_tween()
-    var _propetytween:PropertyTweener = tween.tween_property(self, "position", player_tile * tilesize, 0.3)
+    position_onlevel = destination
+    tween = get_tree().create_tween()
+    var _propetytween:PropertyTweener = tween.tween_property(self, "position", position_onlevel * _level.tilesize, 0.3)
     tween.play()
     await tween.finished
     _switch_process(true)
+
+func newfloor_warp(position:Vector2):
+    self.position_onlevel = position
+    self.position = position * _level.tilesize
+    pass
     
-func animation_change(x,y):
-    var playanim = AnimationType[x+1][y+1]
-    if playanim != "None":
-        animation.play(playanim)
-        
-func can_move(x:int,y:int):
-    var cell = _level.get_map_cell(Vector2(x,y))
+func get_animation():
+    var name = animation.animation
+    for x in range(_animationtype.size()):
+        var y = _animationtype[x].find(name)
+        if y != -1:
+            return Vector2(x-1,y-1)
+    return Vector2(0,0)
+
+func can_move(destination:Vector2):
+    var cell = _level.get_map_cell(destination)
     if cell["tile"] == _level.Tile.Wall:
         return false
     if cell["unit"] != null:
@@ -119,15 +112,10 @@ func can_move(x:int,y:int):
         _level.open_stair_ui()
     return true
 
-func newfloor_warp(position:Vector2):
-    self.player_tile = position
-    self.position = position * tilesize
-    pass
-        
 func attack():
     var direction:Vector2 = get_animation()
-    var x = player_tile.x + direction.x
-    var y = player_tile.y + direction.y
+    var x = position_onlevel.x + direction.x
+    var y = position_onlevel.y + direction.y
     var cell = _level.get_map_cell(Vector2(x,y))
     if(cell["unit"] != null):
         cell["unit"].damage()
@@ -137,20 +125,6 @@ func attack():
     await get_tree().create_timer(0.2).timeout
     _switch_process(true)
     action_end()
-    
-func get_animation():
-    var name = animation.animation
-    for x in range(AnimationType.size()):
-        var y = AnimationType[x].find(name)
-        if y != -1:
-            return Vector2(x-1,y-1)
-    return Vector2(0,0)
-
-func damage():
-    # メソッドチェーンをやめろ！！！！
-    _level.life_manager.death(self)
-    queue_free()
-    _level.get_tree().change_scene_to_file("res://Title/Title.tscn")
 
 func action():
     myturn = true

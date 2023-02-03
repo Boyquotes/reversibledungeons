@@ -58,9 +58,9 @@ func _init():
 func _ready():
     # randomize() 現時点では未使用だが、ランダム生成する時には要るかも
     life_manager = LifeManage.new()
-    player = Player.new(tilesize, self, $Camera2D/CanvasLayer)
+    player = Player.new(self, $Camera2D/CanvasLayer)
     level.add_child(player)
-    enemy = Enemy.new(tilesize, self)
+    enemy = Enemy.new(self,Vector2(3,5))
     level.add_child(enemy)
     life_manager.append(player)
     life_manager.append(enemy)
@@ -68,7 +68,6 @@ func _ready():
     _goal_ui = GoalUI.new(player, self, $Camera2D/CanvasLayer)
     turn_manager = TurnManage.new(life_manager, $Camera2D/CanvasLayer/Label4)
     level.add_child(turn_manager)
-    
     Camera.level = self
     Camera.player = player
     new_floor()
@@ -76,16 +75,16 @@ func _ready():
 func new_floor():
     buildLevelFromData(Vector2i(30,20), mapdata[floornum])
     player.newfloor_warp(Vector2(5,5))
-    # todo:Enemyが湧く処理がベタ打ちなので倒してから降りるとバグる
-    enemy.newfloor_warp(Vector2(3,5))
+    # todo:初期位置指定方法変更
+    # enemy.newfloor_warp(Vector2(3,5))
     floornum += 1
     pass
 
 func _process(_delta):
     if Stair.position == (player.position):
-        text.text = "(階段)({0},{1})".format([player.player_tile.x, player.player_tile.y])
+        text.text = "(階段)({0},{1})".format([player.position_onlevel.x, player.position_onlevel.y])
     else:
-        text.text = "({0})({1},{2})".format([cell[player.player_tile.x][player.player_tile.y], player.player_tile.x, player.player_tile.y])
+        text.text = "({0})({1},{2})".format([cell[player.position_onlevel.x][player.position_onlevel.y], player.position_onlevel.x, player.position_onlevel.y])
 
 # mapdataから地形を生成する
 # mapdata:生成する地形のデータ(int型2次元配列)
@@ -130,7 +129,7 @@ func get_map_cell(point:Vector2):
     var result = {}
     result["unit"] = null
     for e in life_manager.get_alive_unit():
-        if e.player_tile == point:
+        if e.position_onlevel == point:
             result["unit"] = e
             break
     if point.x >= cell.size() || point.y >= cell[point.x].size():
@@ -144,8 +143,8 @@ func get_map_cell(point:Vector2):
     return result
     
 func get_position_diff_from_player(point:Vector2):
-    GeneralWindow.show_message("ターン数:{1}, 距離：{0}".format([player.player_tile - point, turn_manager.turn]))
-    return player.player_tile - point
+    GeneralWindow.show_message("ターン数:{1}, 距離：{0}".format([player.position_onlevel - point, turn_manager.turn]))
+    return player.position_onlevel - point
     pass
 
 func open_stair_ui():

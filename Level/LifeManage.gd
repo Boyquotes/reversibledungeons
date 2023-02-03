@@ -9,6 +9,7 @@ func append(unit):
 func death(unit):
     if unit is Player:
         player_is_alive = false 
+        unit.get_tree().change_scene_to_file("res://Title/Title.tscn")
     _alive.erase(unit)
 
 func get_alive_unit():
