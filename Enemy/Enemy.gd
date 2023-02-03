@@ -13,7 +13,7 @@ const AnimationType:Array = [
     ["Up-Right","Right","Down-Right"],
     ]
 
-func _init(DefaultTilesize:int, level:Level):
+func _init(DefaultTilesize:int, level:Level) -> void:
     tilesize = DefaultTilesize
     _level = level
     self.scale = level.scale
@@ -21,6 +21,7 @@ func _init(DefaultTilesize:int, level:Level):
 func _ready():
     animation = animation_scene.instantiate()
     add_child(animation)
+    animation.play()
 
 func try_move(dx, dy):
     var x = player_tile.x + dx

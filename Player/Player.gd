@@ -25,6 +25,7 @@ func _init(DefaultTilesize:int, level:Level, canvas:CanvasLayer):
 func _ready():
     animation = animation_scene.instantiate()
     add_child(animation)
+    animation.play()
 
 func _set_active(flag:bool):
     isActive = flag

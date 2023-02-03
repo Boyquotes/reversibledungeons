@@ -89,7 +89,6 @@ func _process(_delta):
 
 # mapdataから地形を生成する
 # mapdata:生成する地形のデータ(int型2次元配列)
-@warning_ignore(shadowed_variable)
 func buildLevelFromData(size:Vector2i, mapdata:Array):
     tile_map.clear()
     
