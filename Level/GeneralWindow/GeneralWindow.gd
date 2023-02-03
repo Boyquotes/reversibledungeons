@@ -19,13 +19,14 @@ func _process(_delta):
             self.set_process(false)
     
 func show_message(text:String):
-    window.append_text(text)
+    window.add_text(text)
     window.newline()
     self.show()
     var bar:VScrollBar = window.get_v_scroll_bar()
-    
-    # なぜかこの計算処理を入れるとTweenで下までスクロールできる?
-    var linecount = window.get_line_count()
+    # なぜかこの計算処理を入れるとTweenで下までスクロールできる
+    window.get_line_count()
+    if(tween != null):
+        tween.kill()
     tween = get_tree().create_tween()
     _propetytween = tween.tween_property(bar, "value", bar.max_value, 0.3)
     timer = get_tree().create_timer(2)
