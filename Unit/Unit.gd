@@ -43,9 +43,13 @@ func update_position(destination:Vector2):
 
 ## Unitの歩行アニメをx,yで指定された方向を示すアニメーションに変更する
 func animation_change(x,y):
-    var playanim = _animationtype[x+1][y+1]
+    var playanim:String = _animationtype[x+1][y+1]
     if playanim != "None":
-        animation.play(playanim)
+        if animation.animation != playanim:
+            # 方向転換より移動が先に処理されてスライドしてるみたいに見えちゃう現象の対策
+            animation.stop()
+            animation.play(playanim)
+            await animation.animation_changed
 
 ## ダメージを受けた時の処理[br]
 ## 現状では攻撃を受けたら死ぬ仕様

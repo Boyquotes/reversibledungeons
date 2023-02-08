@@ -48,7 +48,7 @@ func attack(dx,dy):
     var x = position_onlevel.x + dx
     var y = position_onlevel.y + dy
     var cell = _level.get_map_cell(Vector2(x,y))
-    if(cell["unit"] != null):
+    if(cell["unit"].tween != null):
         print_debug(cell["unit"].tween.is_running())
         if(cell["unit"].tween.is_running() == true):
             await cell["unit"].tween.finished
