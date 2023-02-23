@@ -15,7 +15,6 @@ script = ExtResource("1_8a6d7")
 [node name="Camera2D" type="Camera2D" parent="."]
 anchor_mode = 0
 ignore_rotation = false
-current = true
 position_smoothing_enabled = true
 drag_horizontal_enabled = true
 drag_vertical_enabled = true
