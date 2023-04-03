@@ -1,7 +1,7 @@
-[gd_scene load_steps=3 format=3 uid="uid://bqex4v75h2gxj"]
+[gd_scene load_steps=3 format=3 uid="uid://b6bgt6uy1188w"]
 
-[ext_resource type="Theme" uid="uid://c7ymobu6xvq2m" path="res://Theme/ThemeSample.tres" id="1_x4wss"]
-[ext_resource type="Script" path="res://Level/Item/DungeonMenuUI_getSignal.gd" id="2_oy60y"]
+[ext_resource type="Theme" uid="uid://c7ymobu6xvq2m" path="res://Theme/ThemeSample.tres" id="1_qdqla"]
+[ext_resource type="Script" path="res://Level/MenuUI/DungeonMenuUI_getSignal.gd" id="2_uvpmi"]
 
 [node name="DungeonMenuUI" type="Control"]
 layout_mode = 3
@@ -10,8 +10,8 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme = ExtResource("1_x4wss")
-script = ExtResource("2_oy60y")
+theme = ExtResource("1_qdqla")
+script = ExtResource("2_uvpmi")
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 1

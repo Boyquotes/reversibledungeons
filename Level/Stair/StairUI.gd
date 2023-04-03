@@ -21,7 +21,7 @@ func open_ui():
 func close_ui():
     _instance.hide()
     _instance.set_process(false)
-    _player.close_ui()
+    _player.get_focus()
     
 func press_yesbutton():
     close_ui()

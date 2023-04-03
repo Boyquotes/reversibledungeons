@@ -1,6 +1,0 @@
-[gd_scene format=3 uid="uid://dn755v11gnlqx"]
-
-[node name="Label" type="Label"]
-offset_right = 1.0
-offset_bottom = 23.0
-autowrap_mode = 1

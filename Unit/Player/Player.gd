@@ -5,6 +5,7 @@ var _menu_ui:DungeonMenuUI
 var myturn:bool
 var closed:bool
 var isActive:bool = true :set = _set_active
+var items:Array[Item]
 
 func _init(level:Level, canvas:CanvasLayer):
     animation_scene = preload("res://Unit/Player/Player.tscn")
@@ -22,11 +23,6 @@ func _switch_process(run:bool):
     else:
         if(isActive == true):
             set_process(true)
-            
-func close_ui():
-    isActive = true
-    closed = true
-    
 
 func _process(_delta):
     if myturn == false: return
@@ -57,7 +53,6 @@ func _process(_delta):
         return
     # キャンセル+移動同時押しのTween無視対策
     if Input.is_action_pressed("ui_cancel"): return
-       
     if diagonalonly == false and (_x != 0 or _y != 0):
         if changedirection == false:
             try_walk(_x, _y)
@@ -134,3 +129,12 @@ func action_end():
     # メソッドチェーンをやめろ！！！！
     _level.turn_manager.action_end()
     pass
+
+## 他のUIに操作を譲る
+func pass_focus():
+    self.isActive = false
+
+## 他のUIから操作を取得する
+func get_focus():
+    isActive = true
+    closed = true

@@ -1,0 +1,128 @@
+[gd_scene load_steps=4 format=3 uid="uid://nouut3gncvhh"]
+
+[ext_resource type="Theme" uid="uid://ceicdmck4oesc" path="res://Theme/ItemMenu.tres" id="1_6138s"]
+[ext_resource type="Script" path="res://Level/MenuUI/Item/ItemMenuUI_getSignal.gd" id="2_vgri1"]
+[ext_resource type="Texture2D" uid="uid://cy5sgul03igi4" path="res://Level/MenuUI/Item/ItemIconSample.png" id="3_3uuap"]
+
+[node name="ItemMenuUI" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_6138s")
+script = ExtResource("2_vgri1")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -282.0
+offset_top = -458.0
+offset_right = 282.0
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="PanelContainer" type="PanelContainer" parent="MarginContainer"]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/PanelContainer"]
+layout_mode = 2
+
+[node name="Button" type="Button" parent="MarginContainer/PanelContainer/VBoxContainer"]
+layout_mode = 2
+text = "アイテム1"
+icon = ExtResource("3_3uuap")
+alignment = 0
+
+[node name="Button2" type="Button" parent="MarginContainer/PanelContainer/VBoxContainer"]
+layout_mode = 2
+text = "アイテム2
+"
+icon = ExtResource("3_3uuap")
+alignment = 0
+
+[node name="Button3" type="Button" parent="MarginContainer/PanelContainer/VBoxContainer"]
+layout_mode = 2
+text = "アイテム3
+"
+icon = ExtResource("3_3uuap")
+alignment = 0
+
+[node name="Button4" type="Button" parent="MarginContainer/PanelContainer/VBoxContainer"]
+layout_mode = 2
+text = "アイテム4
+"
+icon = ExtResource("3_3uuap")
+alignment = 0
+
+[node name="Button5" type="Button" parent="MarginContainer/PanelContainer/VBoxContainer"]
+layout_mode = 2
+text = "アイテム5
+"
+icon = ExtResource("3_3uuap")
+alignment = 0
+
+[node name="Button6" type="Button" parent="MarginContainer/PanelContainer/VBoxContainer"]
+layout_mode = 2
+text = "アイテム6"
+icon = ExtResource("3_3uuap")
+alignment = 0
+
+[node name="Button7" type="Button" parent="MarginContainer/PanelContainer/VBoxContainer"]
+layout_mode = 2
+text = "アイテム7
+"
+icon = ExtResource("3_3uuap")
+alignment = 0
+
+[node name="Button8" type="Button" parent="MarginContainer/PanelContainer/VBoxContainer"]
+layout_mode = 2
+text = "アイテム8"
+icon = ExtResource("3_3uuap")
+alignment = 0
+
+[node name="Button9" type="Button" parent="MarginContainer/PanelContainer/VBoxContainer"]
+layout_mode = 2
+text = "アイテム9
+"
+icon = ExtResource("3_3uuap")
+alignment = 0
+
+[node name="Button10" type="Button" parent="MarginContainer/PanelContainer/VBoxContainer"]
+layout_mode = 2
+text = "アイテム10"
+icon = ExtResource("3_3uuap")
+alignment = 0
+
+[node name="MarginContainer2" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -282.0
+offset_right = -122.0
+offset_bottom = 107.0
+grow_horizontal = 2
+
+[node name="PanelContainer" type="PanelContainer" parent="MarginContainer2"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="MarginContainer2/PanelContainer"]
+layout_mode = 2
+text = "アイテム"
+
+[connection signal="pressed" from="MarginContainer/PanelContainer/VBoxContainer/Button" to="." method="_on_button_pressed" binds= [0]]
+[connection signal="pressed" from="MarginContainer/PanelContainer/VBoxContainer/Button2" to="." method="_on_button_pressed" binds= [1]]
+[connection signal="pressed" from="MarginContainer/PanelContainer/VBoxContainer/Button3" to="." method="_on_button_pressed" binds= [2]]
+[connection signal="pressed" from="MarginContainer/PanelContainer/VBoxContainer/Button4" to="." method="_on_button_pressed" binds= [3]]
+[connection signal="pressed" from="MarginContainer/PanelContainer/VBoxContainer/Button5" to="." method="_on_button_pressed" binds= [4]]
+[connection signal="pressed" from="MarginContainer/PanelContainer/VBoxContainer/Button6" to="." method="_on_button_pressed" binds= [5]]
+[connection signal="pressed" from="MarginContainer/PanelContainer/VBoxContainer/Button7" to="." method="_on_button_pressed" binds= [6]]
+[connection signal="pressed" from="MarginContainer/PanelContainer/VBoxContainer/Button8" to="." method="_on_button_pressed" binds= [7]]
+[connection signal="pressed" from="MarginContainer/PanelContainer/VBoxContainer/Button9" to="." method="_on_button_pressed" binds= [8]]
+[connection signal="pressed" from="MarginContainer/PanelContainer/VBoxContainer/Button10" to="." method="_on_button_pressed" binds= [9]]

@@ -59,6 +59,8 @@ func _ready():
     # randomize() 現時点では未使用だが、ランダム生成する時には要るかも
     life_manager = LifeManage.new()
     player = Player.new(self, $Camera2D/CanvasLayer)
+    player.items.append(Item.new(player, GeneralWindow))
+    player.items.append(Item.new(player, GeneralWindow))
     level.add_child(player)
     enemy = Enemy.new(self,Vector2(3,5))
     level.add_child(enemy)
@@ -128,6 +130,7 @@ func get_map_cell(point:Vector2):
     var tilepos:Vector2 = point * tilesize
     var result = {}
     result["unit"] = null
+    # hack:連続使用した時のループ回数が気になるけどそのままでも動くしまぁいいかなぁ…
     for e in life_manager.get_alive_unit():
         if e.position_onlevel == point:
             result["unit"] = e

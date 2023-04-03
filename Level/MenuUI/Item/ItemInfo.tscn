@@ -1,0 +1,28 @@
+[gd_scene load_steps=3 format=3 uid="uid://bt1e7m83pvrdp"]
+
+[ext_resource type="Theme" uid="uid://ceicdmck4oesc" path="res://Theme/ItemMenu.tres" id="1_5434y"]
+[ext_resource type="Script" path="res://Level/MenuUI/Item/ItemInfo_getSignal.gd" id="2_ey0wa"]
+
+[node name="ItemInfo" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_5434y")
+script = ExtResource("2_ey0wa")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="PanelContainer" type="PanelContainer" parent="MarginContainer"]
+layout_mode = 2
+
+[node name="RichTextLabel" type="RichTextLabel" parent="MarginContainer/PanelContainer"]
+layout_mode = 2
