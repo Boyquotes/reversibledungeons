@@ -23,7 +23,7 @@ func show_message(text:String):
     window.newline()
     self.show()
     var bar:VScrollBar = window.get_v_scroll_bar()
-    # なぜかこの計算処理を入れるとTweenで下までスクロールできる
+    # なぜかこの計算処理を入れるとTweenで下までスクロールできる(バグ?)
     window.get_line_count()
     if(tween != null):
         tween.kill()

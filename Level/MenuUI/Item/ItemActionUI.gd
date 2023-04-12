@@ -20,6 +20,7 @@ func _init(player:Player, canvas:CanvasLayer, parent):
 ## UIを開く(汎用)
 func open_ui():
     # x座標はItemMenuの左端に触るぐらいを目標に調整した
+    # todo:置く、投げる、使うができる状態か判定してできない操作のボタンを非アクティブにする
     _instance.position = Vector2(732, 0)
     _parent.pass_focus()
     self.get_focus()
@@ -28,7 +29,7 @@ func open_ui():
 func open_ui_from_itemmenu(itemnum:int):
     # x座標はItemMenuの左端に触るぐらいを目標に調整した
     _instance.position = Vector2(732, _buttonsize * itemnum)
-    _item = _player.items[itemnum]
+    _item = _player.inventory.get_item(itemnum)
     _instance.find_child("Button").text = _item.action_name
     _parent.pass_focus(true)
     self.get_focus()
@@ -41,19 +42,20 @@ func close_ui():
 ## 固有操作のボタンを押した時の挙動
 func press_use_button():
     self.return_focus_to_player()
-    _item.use()
+    _item.use(_player)
     pass
 
+# todo:置く、投げる、使うを押した時、ターンを消費させる
 ## 投げるボタンを押した時の挙動
 func press_throw_button():
     self.return_focus_to_player()
-    _item.throw()
+    _item.throw(_player)
     pass
     
 ## 置くボタンを押した時の挙動
 func press_put_button():
     self.return_focus_to_player()
-    _item.put()
+    _item.put(_player)
     pass
     
 ## 説明ボタンを押した時の挙動

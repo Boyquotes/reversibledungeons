@@ -4,14 +4,16 @@ class_name Player
 var _menu_ui:DungeonMenuUI
 var myturn:bool
 var closed:bool
+var inventory:Inventory
 var isActive:bool = true :set = _set_active
-var items:Array[Item]
 
 func _init(level:Level, canvas:CanvasLayer):
     animation_scene = preload("res://Unit/Player/Player.tscn")
+    self.unit_name = "Player"
     _level = level
     _menu_ui = DungeonMenuUI.new(self, canvas)
-    self.scale = level.scale
+    self.inventory = Inventory.new()
+    _level.levelnode.add_child(self)
 
 func _set_active(flag:bool):
     isActive = flag
@@ -69,23 +71,21 @@ func try_walk(dx:int, dy:int):
     var y = position_onlevel.y + dy
     animation_change(dx,dy)
     if can_move(Vector2(x, y)) == true:
-        update_position(Vector2(x, y))
+        move(Vector2(x, y))
+        after_move()
         action_end()
     pass
 
-func update_position(destination:Vector2):
+func move(destination:Vector2):
     _switch_process(false)
-    position_onlevel = destination
-    tween = get_tree().create_tween()
-    var _propetytween:PropertyTweener = tween.tween_property(self, "position", position_onlevel * _level.tilesize, 0.3)
-    tween.play()
-    await tween.finished
+    await super.move(destination)
     _switch_process(true)
 
+## 新しい階層に来た時、初期位置を指定する
 func newfloor_warp(position:Vector2):
     self.position_onlevel = position
     self.position = position * _level.tilesize
-    pass
+    _level.pop_unit(self, position)
     
 func get_animation():
     var name = animation.animation
@@ -95,31 +95,36 @@ func get_animation():
             return Vector2(x-1,y-1)
     return Vector2(0,0)
 
-func can_move(destination:Vector2):
-    var cell = _level.get_map_cell(destination)
-    if cell["tile"] == _level.Tile.Wall:
-        return false
-    if cell["unit"] != null:
-        return false
-    #todo:ここに角抜け防止処理
-    if(cell["stair"] == true):
-        #todo:本来はupdate()の後で呼ばれるべき
+# 位置更新後に呼び出す処理
+func after_move():
+    await tween.finished
+    var cell = _level.get_map_cell(position_onlevel)
+    if(cell.stair == true):
         _level.open_stair_ui()
-    return true
+    if cell.item != null:
+        self.pick(cell.item)
 
 func attack():
     var direction:Vector2 = get_animation()
     var x = position_onlevel.x + direction.x
     var y = position_onlevel.y + direction.y
     var cell = _level.get_map_cell(Vector2(x,y))
-    if(cell["unit"] != null):
-        cell["unit"].damage()
+    if(cell.unit != null):
+        cell.unit.damage()
     _switch_process(false)
     # todo:ここから下仮設置 将来的に外す
     # 暴発対策にupdate()もどきを入れておいた
     await get_tree().create_timer(0.2).timeout
     _switch_process(true)
     action_end()
+    
+func pick(drop:DroppedItem):
+    # todo:拾わない時(踏んだだけ)の挙動も欲しい
+    var item:Item = drop.pick(self)
+    if inventory.pick(item):
+        # todo:テスト用ログなので正式実装ではない
+        _level.GeneralWindow.show_message("{0}を拾った！".format([item.name]))
+        drop.delete()
 
 func action():
     myturn = true

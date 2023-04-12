@@ -4,12 +4,16 @@ class_name Unit
 ## 
 ## マップ上のユニット(player、Enemy、中立NPC…)に共通する処理
 
+## ユニットの名前
+var unit_name:String
+
 ## ユニットの歩行グラフィック
 var animation_scene:PackedScene
 
 ## Unitのアニメーションを制御するインスタンス
 var animation:AnimatedSprite2D
 
+## todo:Vector2iにしたくない？
 ## Level上にあるこのUnitの座標
 var position_onlevel:Vector2
 
@@ -33,8 +37,19 @@ func _ready():
     add_child(animation)
     animation.play()
 
+## destinationに移動可能かどうか_levelに問い合わせる
+func can_move(destination:Vector2):
+    var cell = _level.get_map_cell(destination)
+    if cell.tiletype == _level.Tile.Wall:
+        return false
+    if cell.unit != null:
+        return false
+    #todo:ここに角抜け防止処理
+    return true
+
 ## destinationで提示されたマスにUnitを移動する
-func update_position(destination:Vector2):
+func move(destination:Vector2):
+    _level.move_unit(self, position_onlevel, destination)
     position_onlevel = destination
     tween = get_tree().create_tween()
     var _propetytween:PropertyTweener = tween.tween_property(self, "position", position_onlevel * _level.tilesize, 0.3)
@@ -56,5 +71,7 @@ func animation_change(x,y):
 func damage():
     # メソッドチェーンをやめろ！！！！
     # ここsignalでもいい気がする
+    # todo:死ぬ時はマップ上のunitを消す
+    _level.GeneralWindow.show_message("{0}は倒れた！".format([self.unit_name]))
     _level.life_manager.death(self)
     queue_free()

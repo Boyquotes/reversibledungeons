@@ -11,22 +11,22 @@ func _ready():
 func _process(_delta):
     if Input.is_action_just_released("ui_cancel"):
         if self.visible == true:
-            base_container.press_button()
+            base_container.close_ui()
 
 func _on_item_pressed():
     base_container.press_item_button()
     pass # Replace with function body.
 
 func _on_reserve_pressed():
-    base_container.press_button()
+    base_container.close_ui()
     pass # Replace with function body.
 
 
 func _on_foot_pressed():
-    base_container.press_button()
+    base_container.close_ui()
     pass # Replace with function body.
 
 
 func _on_other_pressed():
-    base_container.press_button()
+    base_container.close_ui()
     pass # Replace with function body.

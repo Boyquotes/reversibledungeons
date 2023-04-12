@@ -12,16 +12,26 @@ func _init(player:Player, level:Level, canvas:CanvasLayer):
     canvas.add_child(_instance)
     _instance.hide()
     
+## ウィンドウを開く    
 func open_ui():
-    _player.isActive = false
-    _instance.show()
-    _instance.set_process(true)
-    _instance.find_child("Yes").grab_focus()
-    
+    _player.pass_focus()
+    self.get_focus()
+
+## ウィンドウを閉じる
 func close_ui():
+    self.pass_focus()
+    _player.get_focus()
+
+## 他のUIから操作を取得する
+func get_focus():
+    _instance.show()
+    _instance.find_child("Yes").grab_focus()
+    _instance.set_process(true)
+    
+## 他のUIに操作を譲る
+func pass_focus():
     _instance.hide()
     _instance.set_process(false)
-    _player.get_focus()
     
 func press_yesbutton():
     close_ui()

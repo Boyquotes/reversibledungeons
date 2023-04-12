@@ -9,12 +9,10 @@ var turn:int = 0
 func _init(life:LifeManage,text:Label):
     lifemanager = life
     self.text = text
-    pass
     
 func _ready():
     assert(text)
     text.text = "ターン数:{0}".format([turn])
-    action_end()
     pass
 
 func action_end():
@@ -29,7 +27,7 @@ func action_end():
     # todo:多分生存してるUnitが0だとバグる
     next.action()
 
-# たぶんこれUnitをReturnした方が行儀良い
+# todo:たぶんこれUnitをReturnした方が行儀良い
 func next_turn():
     turn += 1
     text.text = "ターン数:{0}".format([turn])
