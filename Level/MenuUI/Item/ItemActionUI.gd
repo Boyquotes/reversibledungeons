@@ -42,20 +42,20 @@ func close_ui():
 ## 固有操作のボタンを押した時の挙動
 func press_use_button():
     self.return_focus_to_player()
-    _item.use(_player)
+    _item.use()
     pass
 
 # todo:置く、投げる、使うを押した時、ターンを消費させる
 ## 投げるボタンを押した時の挙動
 func press_throw_button():
     self.return_focus_to_player()
-    _item.throw(_player)
+    _item.throw()
     pass
     
 ## 置くボタンを押した時の挙動
 func press_put_button():
     self.return_focus_to_player()
-    _item.put(_player)
+    _item.put()
     pass
     
 ## 説明ボタンを押した時の挙動

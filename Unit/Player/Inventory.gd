@@ -2,10 +2,14 @@ class_name Inventory
 
 # Itemを溜めておくための配列
 var _items:Array[Item] = []
+var _maxsize:int
+
+func _init(max:int):
+    _maxsize = max
 
 ## アイテムを拾う
 func pick(item:Item):
-    if _items.size() >= 20:
+    if _items.size() >= _maxsize:
         return false
     else:
         _items.append(item)
@@ -14,7 +18,7 @@ func pick(item:Item):
 ## システムからアイテムを追加する
 ## 現状pick()と同様の処理だが、そのうち枝分かれしていくと思う
 func add(item:Item):
-    if _items.size() >= 20:
+    if _items.size() >= _maxsize:
         return false
     else:
         _items.append(item)

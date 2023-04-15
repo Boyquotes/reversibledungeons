@@ -4,6 +4,26 @@ class_name Enemy
 ##
 ## 敵のHP、状態、位置を保持するためのクラス
 
+### ステータス関連の数値
+## MP最大値
+var max_mp:int
+## 現在MP
+var mp:int
+## 攻撃力
+var atkpower:int
+## 防御力
+var defpower:int
+## 賢さ
+var intpower:int
+## 貫通力
+var penetration:int
+## 命中率
+var hitrate:int
+## 回避率
+var avoidance:int
+## 射程 enumにするかも
+var range:int
+
 ## 初期化処理[br]
 ## animation_sceneとlevelを取得する
 func _init(level:Level, position:Vector2) -> void:
@@ -43,10 +63,11 @@ func attack(dx,dy):
     var x = position_onlevel.x + dx
     var y = position_onlevel.y + dy
     var cell = _level.get_map_cell(Vector2(x,y))
+    var damage = DamageObject.new(self, atkpower, penetration)
     if(cell.unit.tween != null):
         print_debug(cell.unit.tween.is_running())
         if(cell.unit.tween.is_running() == true):
             await cell.unit.tween.finished
         await get_tree().create_timer(0.2).timeout
-        cell.unit.damage()
+        cell.unit.damage(damage)
 

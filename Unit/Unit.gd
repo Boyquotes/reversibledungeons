@@ -7,6 +7,12 @@ class_name Unit
 ## ユニットの名前
 var unit_name:String
 
+## ユニットの体力の最大値
+var max_hp:int
+
+## ユニットの体力
+var hp:int
+
 ## ユニットの歩行グラフィック
 var animation_scene:PackedScene
 
@@ -68,10 +74,10 @@ func animation_change(x,y):
 
 ## ダメージを受けた時の処理[br]
 ## 現状では攻撃を受けたら死ぬ仕様
-func damage():
+func damage(damage:DamageObject):
     # メソッドチェーンをやめろ！！！！
     # ここsignalでもいい気がする
-    # todo:死ぬ時はマップ上のunitを消す
+    damage.show()
     _level.GeneralWindow.show_message("{0}は倒れた！".format([self.unit_name]))
     _level.life_manager.death(self)
     queue_free()

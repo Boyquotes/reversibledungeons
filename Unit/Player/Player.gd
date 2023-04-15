@@ -7,12 +7,37 @@ var closed:bool
 var inventory:Inventory
 var isActive:bool = true :set = _set_active
 
+### ステータス関連の数値
+## MP最大値
+var max_mp:int
+## 現在MP
+var mp:int
+## 満腹度最大値
+var max_fullness:int
+## 満腹度
+var fullness:int
+## 攻撃力
+var atkpower:int = 100
+## 防御力
+var defpower:int
+## 賢さ
+var intpower:int
+## 貫通力
+var penetration:int = 200
+## 命中率
+var hitrate:int
+## 回避率
+var avoidance:int
+## 射程 enumにするかも
+var range:int
+
 func _init(level:Level, canvas:CanvasLayer):
     animation_scene = preload("res://Unit/Player/Player.tscn")
     self.unit_name = "Player"
     _level = level
     _menu_ui = DungeonMenuUI.new(self, canvas)
-    self.inventory = Inventory.new()
+    # デフォ20枠の予定なので20枠に固定
+    self.inventory = Inventory.new(20)
     _level.levelnode.add_child(self)
 
 func _set_active(flag:bool):
@@ -109,8 +134,9 @@ func attack():
     var x = position_onlevel.x + direction.x
     var y = position_onlevel.y + direction.y
     var cell = _level.get_map_cell(Vector2(x,y))
+    var damage = DamageObject.new(self, atkpower, penetration)
     if(cell.unit != null):
-        cell.unit.damage()
+        cell.unit.damage(damage)
     _switch_process(false)
     # todo:ここから下仮設置 将来的に外す
     # 暴発対策にupdate()もどきを入れておいた
@@ -120,7 +146,7 @@ func attack():
     
 func pick(drop:DroppedItem):
     # todo:拾わない時(踏んだだけ)の挙動も欲しい
-    var item:Item = drop.pick(self)
+    var item:Item = drop.pick()
     if inventory.pick(item):
         # todo:テスト用ログなので正式実装ではない
         _level.GeneralWindow.show_message("{0}を拾った！".format([item.name]))

@@ -12,7 +12,6 @@ const tilesize:int = 16
 var floornum:int
 var player:Player
 var enemy:Enemy
-var item:DroppedItem
 var life_manager:LifeManage
 var turn_manager:TurnManage
 var cell:Array
@@ -66,13 +65,13 @@ func _ready():
     turn_manager = TurnManage.new(life_manager, $Camera2D/CanvasLayer/Label4)
     _stair_ui = StairUI.new(player, self, $Camera2D/CanvasLayer)
     _goal_ui = GoalUI.new(player, self, $Camera2D/CanvasLayer)
+    player.inventory.add(Item.new(GeneralWindow, self, player))
     new_floor()
     
 func new_floor():
     buildLevelFromData(Vector2i(30,20), mapdata[floornum])
     if floornum == 0:
         enemy = Enemy.new(self,Vector2(3,5))
-        item = DroppedItem.new(self,Vector2(8,10))
         life_manager.append(enemy)
         turn_manager.action_end()
     player.newfloor_warp(Vector2(5,5))
