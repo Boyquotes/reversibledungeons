@@ -8,8 +8,8 @@ var tiletype:Level.Tile
 ## Cellに乗っているUnit
 var unit:Unit
 
-## Cellに乗っているItem
-var item:DroppedItem
+## Cellに乗っているItem、罠など
+var droppedobject:DroppedObject
 
 ## todo:そのうちitemと同枠にする
 var stair:bool

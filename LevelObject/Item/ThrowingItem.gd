@@ -10,7 +10,7 @@ var position_onlevel:Vector2
 
 ## todo:itemはどのアイテムか判別さえできればOK 将来的にはitemIDとかで区別
 func _init(item:Item, level:Level, thrower:Unit, throw_direction:Vector2 = Vector2(0,0)):
-    sprite = preload("res://Item/DroppedItem.tscn").instantiate()
+    sprite = preload("res://LevelObject/Item/DroppedItem.tscn").instantiate()
     self.add_child(sprite)
     _item = item
     _level = level

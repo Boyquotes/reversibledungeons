@@ -12,6 +12,7 @@ const tilesize:int = 16
 var floornum:int
 var player:Player
 var enemy:Enemy
+var trap:Trap
 var life_manager:LifeManage
 var turn_manager:TurnManage
 var cell:Array
@@ -71,6 +72,7 @@ func _ready():
 func new_floor():
     buildLevelFromData(Vector2i(30,20), mapdata[floornum])
     if floornum == 0:
+        trap = Trap.new(self,Vector2(10,13))
         enemy = Enemy.new(self,Vector2(3,5))
         life_manager.append(enemy)
         turn_manager.action_end()
@@ -148,21 +150,22 @@ func open_stair_ui():
     else:
         _stair_ui.open_ui()
     pass
+    
+## マップにItemを出現させる
+# todo:既存のと位置が被った時の対策
+# hack:罠でも使う処理なので名前とか引数名とか直したい
+func pop_item(item:DroppedObject, position:Vector2):
+    cell[position.x][position.y].droppedobject = item
+    
+## マップのアイテムを削除
+func delete_item(item:DroppedObject, position:Vector2):
+    cell[position.x][position.y].droppedobject = null
+    item.queue_free()
 
 ## マップにUnitを出現させる
 # todo:既存のと位置が被った時の対策
 func pop_unit(unit:Unit, position:Vector2):
     cell[position.x][position.y].unit = unit
-    
-## マップにItemを出現させる
-# todo:既存のと位置が被った時の対策
-func pop_item(item:DroppedItem, position:Vector2):
-    cell[position.x][position.y].item = item
-    
-## マップのアイテムを削除
-func delete_item(item:DroppedItem, position:Vector2):
-    cell[position.x][position.y].item = null
-    item.queue_free()
     
 ## マップ上でUnitのデータを移動させる
 func move_unit(unit:Unit, source:Vector2, destination:Vector2):

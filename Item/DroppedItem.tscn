@@ -1,7 +1,0 @@
-[gd_scene load_steps=2 format=3 uid="uid://jbne0nijo6x5"]
-
-[ext_resource type="Texture2D" uid="uid://gb8dh6yroypb" path="res://Item/ItemSample.png" id="1_ql44a"]
-
-[node name="DroppedItem" type="Sprite2D"]
-texture = ExtResource("1_ql44a")
-centered = false

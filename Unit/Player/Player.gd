@@ -126,8 +126,11 @@ func after_move():
     var cell = _level.get_map_cell(position_onlevel)
     if(cell.stair == true):
         _level.open_stair_ui()
-    if cell.item != null:
-        self.pick(cell.item)
+    if cell.droppedobject != null:
+        if cell.droppedobject is DroppedItem:
+            self.pick(cell.droppedobject)
+        if cell.droppedobject is Trap:
+            cell.droppedobject.stepon(self)
 
 func attack():
     var direction:Vector2 = get_animation()
