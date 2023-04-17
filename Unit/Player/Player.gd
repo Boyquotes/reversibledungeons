@@ -124,12 +124,12 @@ func get_animation():
 func after_move():
     await tween.finished
     var cell = _level.get_map_cell(position_onlevel)
-    if(cell.stair == true):
-        _level.open_stair_ui()
     if cell.droppedobject != null:
         if cell.droppedobject is DroppedItem:
             self.pick(cell.droppedobject)
         if cell.droppedobject is Trap:
+            cell.droppedobject.stepon(self)
+        if cell.droppedobject is Stair:
             cell.droppedobject.stepon(self)
 
 func attack():

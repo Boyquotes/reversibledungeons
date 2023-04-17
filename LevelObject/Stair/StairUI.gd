@@ -1,11 +1,10 @@
 class_name StairUI
 var _ui_scene:PackedScene
 var _instance:Control
-var _player:Player
+var _parent
 var _level:Level
-func _init(player:Player, level:Level, canvas:CanvasLayer):
-    _ui_scene = preload("res://Level/Stair/StairUI.tscn")
-    _player = player
+func _init(level:Level, canvas:CanvasLayer):
+    _ui_scene = preload("res://LevelObject/Stair/StairUI.tscn")
     _level = level
     _instance = _ui_scene.instantiate()
     _instance.baseContainer = self
@@ -13,14 +12,15 @@ func _init(player:Player, level:Level, canvas:CanvasLayer):
     _instance.hide()
     
 ## ウィンドウを開く    
-func open_ui():
-    _player.pass_focus()
+func open_ui(parent):
+    _parent = parent
+    _parent.pass_focus()
     self.get_focus()
 
 ## ウィンドウを閉じる
 func close_ui():
     self.pass_focus()
-    _player.get_focus()
+    _parent.get_focus()
 
 ## 他のUIから操作を取得する
 func get_focus():

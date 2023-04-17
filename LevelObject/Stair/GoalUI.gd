@@ -1,8 +1,7 @@
 extends StairUI
 class_name GoalUI
-func _init(player:Player, level:Level, canvas:CanvasLayer):
-    _ui_scene = preload("res://Level/Stair/GoalUI.tscn")
-    _player = player
+func _init(level:Level, canvas:CanvasLayer):
+    _ui_scene = preload("res://LevelObject/Stair/GoalUI.tscn")
     _level = level
     _instance = _ui_scene.instantiate()
     _instance.baseContainer = self

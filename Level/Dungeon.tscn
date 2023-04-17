@@ -1,10 +1,9 @@
-[gd_scene load_steps=10 format=3 uid="uid://d3up6ai8x1cb3"]
+[gd_scene load_steps=9 format=3 uid="uid://d3up6ai8x1cb3"]
 
 [ext_resource type="Script" path="res://Level/Level.gd" id="1_8a6d7"]
 [ext_resource type="Script" path="res://Level/DungeonCamera.gd" id="2_gdbaa"]
 [ext_resource type="TileSet" uid="uid://oujiluxb5tdj" path="res://Level/TileSet/SampleTileSet.tres" id="2_usv2u"]
 [ext_resource type="Theme" uid="uid://c7ymobu6xvq2m" path="res://Theme/ThemeSample.tres" id="2_vg5tb"]
-[ext_resource type="PackedScene" uid="uid://27jenrm34ebs" path="res://Level/TileSet/Stair.tscn" id="3_jrvhg"]
 [ext_resource type="Script" path="res://Version.gd" id="4_w3px3"]
 [ext_resource type="Script" path="res://Level/inputCapture.gd" id="5_y44m6"]
 [ext_resource type="PackedScene" uid="uid://c6wr8p2vjhw0o" path="res://Level/GeneralWindow/GeneralWindow.tscn" id="6_l5cfo"]
@@ -82,5 +81,3 @@ scale = Vector2(3, 3)
 [node name="TileMap" type="TileMap" parent="Level"]
 tile_set = ExtResource("2_usv2u")
 format = 2
-
-[node name="Stair" parent="Level" instance=ExtResource("3_jrvhg")]

@@ -1,7 +1,0 @@
-[gd_scene load_steps=2 format=3 uid="uid://27jenrm34ebs"]
-
-[ext_resource type="Texture2D" uid="uid://mkpmw73wypu1" path="res://Level/TileSet/Stair.png" id="1_20pe0"]
-
-[node name="Stair" type="Sprite2D"]
-texture = ExtResource("1_20pe0")
-centered = false

@@ -2,9 +2,9 @@ extends Node2D
 class_name Level
 @onready var levelnode = $Level
 @onready var tile_map = $Level/TileMap
-@onready var Stair:Sprite2D = $Level/Stair
 @onready var text:Label = $Camera2D/CanvasLayer/Label2
 @onready var Camera:Camera2D = $Camera2D
+@onready var ui_canvas:CanvasLayer = $Camera2D/CanvasLayer
 @onready var GeneralWindow:GeneralWindow = $Camera2D/CanvasLayer/GeneralWindow
 # 後々のことを考えるとwall=0の方が安牌な気がする
 enum Tile {TileOrange ,TileBlue, Wall}
@@ -13,11 +13,10 @@ var floornum:int
 var player:Player
 var enemy:Enemy
 var trap:Trap
+var stair:Stair
 var life_manager:LifeManage
 var turn_manager:TurnManage
 var cell:Array
-var _stair_ui:StairUI
-var _goal_ui:GoalUI
 const mapdata = [
         [
             [],
@@ -58,18 +57,17 @@ func _init():
 
 func _ready():
     # randomize() 現時点では未使用だが、ランダム生成する時には要るかも
-    player = Player.new(self, $Camera2D/CanvasLayer)
+    player = Player.new(self, ui_canvas)
     Camera.level = self
     Camera.player = player
     life_manager = LifeManage.new()
     life_manager.append(player)
     turn_manager = TurnManage.new(life_manager, $Camera2D/CanvasLayer/Label4)
-    _stair_ui = StairUI.new(player, self, $Camera2D/CanvasLayer)
-    _goal_ui = GoalUI.new(player, self, $Camera2D/CanvasLayer)
     player.inventory.add(Item.new(GeneralWindow, self, player))
     new_floor()
     
 func new_floor():
+    # todo:新しい階層行く前に前の階層のオブジェクト一掃したい
     buildLevelFromData(Vector2i(30,20), mapdata[floornum])
     if floornum == 0:
         trap = Trap.new(self,Vector2(10,13))
@@ -77,15 +75,13 @@ func new_floor():
         life_manager.append(enemy)
         turn_manager.action_end()
     player.newfloor_warp(Vector2(5,5))
+    stair = Stair.new(self, Vector2(7,7))
     # todo:初期位置指定方法変更
     # todo:敵を沸かす処理追加
     floornum += 1
     pass
 
 func _process(_delta):
-    if Stair.position == (player.position):
-        text.text = "(階段)({0},{1})".format([player.position_onlevel.x, player.position_onlevel.y])
-    else:
         text.text = "({0})({1},{2})".format([cell[player.position_onlevel.x][player.position_onlevel.y].tiletype, player.position_onlevel.x, player.position_onlevel.y])
 
 # mapdataから地形を生成する
@@ -124,7 +120,6 @@ func buildLevelFromData(size:Vector2i, mapdata:Array):
     tile_map.set_cells_terrain_connect(0, bluetile, 0, Tile.TileBlue, false)
     tile_map.set_cells_terrain_connect(0, whitetile, 0, Tile.TileOrange, false)
     tile_map.set_cells_terrain_connect(0, wall, 0, Tile.Wall, false)
-    Stair.position = Vector2(7,7) * tilesize
 
 func get_map_cell(point:Vector2) -> LevelCell:
     if point.x >= cell.size() or point.y >= cell[0].size():
@@ -133,23 +128,11 @@ func get_map_cell(point:Vector2) -> LevelCell:
         return LevelCell.new(Tile.Wall)
     var result = cell[point.x][point.y]
     var tilepos:Vector2 = point * tilesize
-    if Stair.position == tilepos:
-        result.stair = true
-    else:
-        result.stair = false
     return result
     
 func get_position_diff_from_player(point:Vector2):
     GeneralWindow.show_message("ターン数:{1}, 距離：{0}".format([player.position_onlevel - point, turn_manager.turn]))
     return player.position_onlevel - point
-
-func open_stair_ui():
-    # 読み込み方めんどくさすぎる気がする…
-    if floornum >= mapdata.size():
-        _goal_ui.open_ui()
-    else:
-        _stair_ui.open_ui()
-    pass
     
 ## マップにItemを出現させる
 # todo:既存のと位置が被った時の対策
