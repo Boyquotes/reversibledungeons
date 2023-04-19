@@ -11,8 +11,5 @@ var unit:Unit
 ## Cellに乗っているItem、罠など
 var droppedobject:DroppedObject
 
-## todo:そのうちitemと同枠にする
-var stair:bool
-
 func _init(type:Level.Tile):
     tiletype = type

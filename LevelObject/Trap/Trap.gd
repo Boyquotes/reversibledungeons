@@ -15,6 +15,10 @@ func _init(level:Level, position:Vector2):
 
 func stepon(_stepper:Unit):
     _level.GeneralWindow.show_message("罠を踏んだ！")
+    
+func stepon_item(_item:ThrowingItem):
+    _level.GeneralWindow.show_message("アイテムが罠を踏んだ！")
+    pass
  
 # 画面とマップデータからこのアイテムを消す
 func delete():

@@ -54,10 +54,48 @@ func throw(direction:Vector2):
     drop()
     
 func drop():
-    # todo:cellのitemが空ならそこに落とし、空でないなら隣接する空のマスを探して落とす機能を入れる
-    DroppedItem.new(_item, _level, position_onlevel)
-    queue_free()
+    if can_put(position_onlevel) == false:
+        var cell = _level.get_map_cell(position_onlevel)
+        if cell.droppedobject is Trap:
+            cell.droppedobject.stepon_item(self)
+    else:
+        DroppedItem.new(_item, _level, position_onlevel)
+        queue_free()
+        return
     
+    # 第一候補地に置けなかったので横のマスに置きたい
+    # 第一候補地を中心に3×3の範囲で反時計回り→5×5の範囲で反時計回り
+    var target = [Vector2(-1,-1),Vector2(0,-1),Vector2(1,-1),
+    Vector2(1,0),Vector2(1,1),Vector2(0,1),Vector2(-1,1),Vector2(-1,0),
+    Vector2(-2,-2),Vector2(-1,-2),Vector2(0,-2),Vector2(1,-2),
+    Vector2(2,-2),Vector2(2,-1),Vector2(2,0),Vector2(2,1),
+    Vector2(2,2),Vector2(1,2),Vector2(0,2),Vector2(-1,2),
+    Vector2(-2,2),Vector2(-2,1),Vector2(-2,0),Vector2(-2,-1)]
+    
+    for diff in target:
+        var destination = position_onlevel + diff
+        if can_put(destination) == true:
+            var tween = get_tree().create_tween()
+            var _propetytween:PropertyTweener = tween.tween_property(self, "position", destination * _level.tilesize, 0.05)
+            tween.play()
+            await tween.finished
+            DroppedItem.new(_item, _level, destination)
+            queue_free()
+            return
+            
+    # 置けそうにないので消滅する
+    _level.GeneralWindow.show_message("アイテムは消滅してしまった…")
+    queue_free()
+    return
+    
+func can_put(destination:Vector2):
+    var cell = _level.get_map_cell(destination)
+    if cell.tiletype == _level.Tile.Wall:
+        return false
+    if cell.droppedobject != null:
+        return false
+    return true
+
 ## destinationに移動可能かどうか_levelに問い合わせる
 func can_move(destination:Vector2):
     var cell = _level.get_map_cell(destination)
