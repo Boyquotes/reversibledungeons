@@ -19,8 +19,9 @@ func _init(level:Level, position:Vector2):
     else:
         stair_ui = StairUI.new(level, level.ui_canvas)
 
-func stepon(stepper:Player):
-    stair_ui.open_ui(stepper)
+func stepon(stepper:Unit):
+    if stepper is Player:
+        stair_ui.open_ui(stepper)
  
 # 画面とマップデータからこのアイテムを消す
 func delete():

@@ -35,7 +35,7 @@ func _init(level:Level, canvas:CanvasLayer):
     animation_scene = preload("res://Unit/Player/Player.tscn")
     self.unit_name = "Player"
     _level = level
-    _menu_ui = DungeonMenuUI.new(self, canvas)
+    _menu_ui = DungeonMenuUI.new(self, _level, canvas)
     # デフォ20枠の予定なので20枠に固定
     self.inventory = Inventory.new(20)
     _level.levelnode.add_child(self)
@@ -111,29 +111,16 @@ func newfloor_warp(position:Vector2):
     self.position_onlevel = position
     self.position = position * _level.tilesize
     _level.pop_unit(self, position)
-    
-func get_animation():
-    var name = animation.animation
-    for x in range(_animationtype.size()):
-        var y = _animationtype[x].find(name)
-        if y != -1:
-            return Vector2(x-1,y-1)
-    return Vector2(0,0)
 
 # 位置更新後に呼び出す処理
 func after_move():
     await tween.finished
     var cell = _level.get_map_cell(position_onlevel)
     if cell.droppedobject != null:
-        if cell.droppedobject is DroppedItem:
-            self.pick(cell.droppedobject)
-        if cell.droppedobject is Trap:
-            cell.droppedobject.stepon(self)
-        if cell.droppedobject is Stair:
-            cell.droppedobject.stepon(self)
+        cell.droppedobject.stepon(self)
 
 func attack():
-    var direction:Vector2 = get_animation()
+    var direction:Vector2 = get_direction()
     var x = position_onlevel.x + direction.x
     var y = position_onlevel.y + direction.y
     var cell = _level.get_map_cell(Vector2(x,y))
@@ -146,14 +133,6 @@ func attack():
     await get_tree().create_timer(0.2).timeout
     _switch_process(true)
     action_end()
-    
-func pick(drop:DroppedItem):
-    # todo:拾わない時(踏んだだけ)の挙動も欲しい
-    var item:Item = drop.pick()
-    if inventory.pick(item):
-        # todo:テスト用ログなので正式実装ではない
-        _level.GeneralWindow.show_message("{0}を拾った！".format([item.name]))
-        drop.delete()
 
 func action():
     myturn = true
@@ -172,3 +151,8 @@ func pass_focus():
 func get_focus():
     isActive = true
     closed = true
+    
+func pick(item:Item):
+    _level.GeneralWindow.show_message("{0}を拾った".format([item.object_name]))
+    inventory.pick(item)
+    pass

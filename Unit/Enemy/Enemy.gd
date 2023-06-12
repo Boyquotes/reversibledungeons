@@ -69,5 +69,5 @@ func attack(dx,dy):
         if(cell.unit.tween.is_running() == true):
             await cell.unit.tween.finished
         await get_tree().create_timer(0.2).timeout
-        cell.unit.damage(damage)
+    cell.unit.damage(damage)
 

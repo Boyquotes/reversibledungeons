@@ -72,6 +72,15 @@ func animation_change(x,y):
             animation.play(playanim)
             await animation.animation_changed
 
+## アニメーションから向きを取得する
+func get_direction():
+    var name = animation.animation
+    for x in range(_animationtype.size()):
+        var y = _animationtype[x].find(name)
+        if y != -1:
+            return Vector2(x-1,y-1)
+    return Vector2(0,0)
+
 ## ダメージを受けた時の処理[br]
 ## 現状では攻撃を受けたら死ぬ仕様
 func damage(damage:DamageObject):
@@ -81,3 +90,15 @@ func damage(damage:DamageObject):
     _level.GeneralWindow.show_message("{0}は倒れた！".format([self.unit_name]))
     _level.life_manager.death(self)
     queue_free()
+    
+## アイテムを投げる
+func throw(item):
+    _level.GeneralWindow.show_message("{0}を投げた！".format([item.object_name]))
+    ThrowingItem.new(item, _level, self)
+    pass
+
+## アイテムを置く
+func put(item):
+    _level.GeneralWindow.show_message("{0}を置いた".format([item.object_name]))
+    DroppedItem.new(item, _level, self.position_onlevel)
+    pass

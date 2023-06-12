@@ -16,8 +16,8 @@ func _init(player:Player, canvas:CanvasLayer, parent):
     _instance.hide()
     
 ## ウィンドウを開く
-func open_ui(item:Item):
-    _instance.find_child("RichTextLabel").text = item.infotext
+func open_ui(object):
+    _instance.find_child("RichTextLabel").text = object.get_information()
     _parent.pass_focus()
     self.get_focus()
 

@@ -1,43 +1,32 @@
 class_name Item
-# Called when the node enters the scene tree for the first time.
-var action_name:String = "使う"
-var _window:GeneralWindow
-var _level:Level
-var _player:Player
-var name:String = "テスト用アイテム"
-var infotext = "説明表示テスト用"
+extends LevelObject
 
 ## 動作に必要なクラスを取得する
 ## playerというよりは所有者な気もする 将来的にunitに変更?
-func _init(window:GeneralWindow, level:Level, player:Player):
-    _window = window
-    _level = level
-    _player = player
+## todo:itemはどのアイテムか判別さえできればOK 将来的にはitemIDとかで区別
+func _init():
+    action_name = "使う"
+    object_name = "テスト用アイテム"
+    infotext = "説明表示テスト用"
+    imagepass = "res://LevelObject/Item/ItemSample.png"
 
 ## アイテムに対する固有の動作
-func use():
+func use(user:Unit):
     ## ここに使った時の挙動入れる
-    _player.inventory.delete(self)
-    _window.show_message("{0}を使った！".format([self.name]))
+    delete.call()
+    #_window.show_message("{0}を使った！".format([self.name]))
 
 ## アイテムを投げる
-func throw():
-    _player.inventory.delete(self)
-    ThrowingItem.new(self, _level, _player, _player.get_animation())
-    _window.show_message("{0}を投げた！".format([self.name]))
+func throw(thrower:Unit):
+    delete.call()
+    thrower.throw(self)
     pass
 
 ## アイテムを投げて当たった時の動作
-func clash(unit:Unit):
+func clash(thrower:Unit,unit:Unit):
     # todo:投げて当たった時の動作
-    var damage = DamageObject.new(_player)
+    var damage = DamageObject.new(thrower)
     unit.damage(damage)
-    pass
-
-## アイテムを置く
-func put():
-    DroppedItem.new(self, _level, _player.position_onlevel)
-    _player.inventory.delete(self)
-    _window.show_message("{0}を置いた".format([self.name]))
-    # todo:アイテムを置く動作
+    # todo:命中しなかったor敵にぶつかっても壊れるタイプのアイテムじゃなかった場合、Drop()
+    delete.call()
     pass

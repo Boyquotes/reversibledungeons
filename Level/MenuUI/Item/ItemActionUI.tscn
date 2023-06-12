@@ -13,34 +13,7 @@ script = ExtResource("2_cwdiu")
 [node name="PanelContainer" type="PanelContainer" parent="."]
 layout_mode = 1
 offset_right = 149.0
-offset_bottom = 176.0
+offset_bottom = 20.0
 
 [node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer"]
 layout_mode = 2
-
-[node name="Button" type="Button" parent="PanelContainer/VBoxContainer"]
-layout_mode = 2
-text = "固有"
-alignment = 0
-
-[node name="Button2" type="Button" parent="PanelContainer/VBoxContainer"]
-layout_mode = 2
-text = "投げる
-"
-alignment = 0
-
-[node name="Button3" type="Button" parent="PanelContainer/VBoxContainer"]
-layout_mode = 2
-text = "置く
-"
-alignment = 0
-
-[node name="Button4" type="Button" parent="PanelContainer/VBoxContainer"]
-layout_mode = 2
-text = "説明"
-alignment = 0
-
-[connection signal="pressed" from="PanelContainer/VBoxContainer/Button" to="." method="_on_button_pressed"]
-[connection signal="pressed" from="PanelContainer/VBoxContainer/Button2" to="." method="_on_button_2_pressed"]
-[connection signal="pressed" from="PanelContainer/VBoxContainer/Button3" to="." method="_on_button_3_pressed"]
-[connection signal="pressed" from="PanelContainer/VBoxContainer/Button4" to="." method="_on_button_4_pressed"]

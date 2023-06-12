@@ -12,7 +12,8 @@ const tilesize:int = 16
 var floornum:int
 var player:Player
 var enemy:Enemy
-var trap:Trap
+var trap:DroppedTrap
+var trap2:DroppedTrap
 var stair:Stair
 var life_manager:LifeManage
 var turn_manager:TurnManage
@@ -63,14 +64,24 @@ func _ready():
     life_manager = LifeManage.new()
     life_manager.append(player)
     turn_manager = TurnManage.new(life_manager, $Camera2D/CanvasLayer/Label4)
-    player.inventory.add(Item.new(GeneralWindow, self, player))
+    player.inventory.add(Item.new())
+    player.inventory.add(Item.new())
+    player.inventory.add(Item.new())
+    player.inventory.add(Item.new())
+    player.inventory.add(Item.new())
+    player.inventory.add(Item.new())
+    player.inventory.add(Item.new())
+    player.inventory.add(Item.new())
+    player.inventory.add(Item.new())
+    player.inventory.add(Item.new())
     new_floor()
     
 func new_floor():
     # todo:新しい階層行く前に前の階層のオブジェクト一掃したい
     buildLevelFromData(Vector2i(30,20), mapdata[floornum])
     if floornum == 0:
-        trap = Trap.new(self,Vector2(10,13))
+        trap = DroppedTrap.new(self,Vector2(10,13),Trap.new())
+        trap2 = DroppedTrap.new(self,Vector2(1,1),Trap.new())
         enemy = Enemy.new(self,Vector2(3,5))
         life_manager.append(enemy)
         turn_manager.action_end()

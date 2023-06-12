@@ -8,24 +8,22 @@ var _thrower:Unit
 ## Level上にあるこのItemの座標
 var position_onlevel:Vector2
 
-## todo:itemはどのアイテムか判別さえできればOK 将来的にはitemIDとかで区別
-func _init(item:Item, level:Level, thrower:Unit, throw_direction:Vector2 = Vector2(0,0)):
-    sprite = preload("res://LevelObject/Item/DroppedItem.tscn").instantiate()
+func _init(item:Item, level:Level, thrower:Unit):
+    sprite = Sprite2D.new()
+    var texture = load(item.imagepass)
+    sprite.set_texture(texture)
+    sprite.centered = false
     self.add_child(sprite)
+    item.delete = self.queue_free
     _item = item
     _level = level
     _thrower = thrower
     self.position_onlevel = _thrower.position_onlevel
     self.position = self.position_onlevel * _level.tilesize
     _level.levelnode.add_child(self)
+    var throw_direction = thrower.get_direction()
     assert(throw_direction != Vector2(0,0))
     throw(throw_direction)
-
-func clash(unit:Unit):
-    # todo:命中しなかったor敵にぶつかっても壊れるタイプのアイテムじゃなかった場合、Drop()
-    var item = Item.new(_level.GeneralWindow, _level, _thrower)
-    item.clash(unit)
-    queue_free()
     
 func throw(direction:Vector2):
     if direction.x > 0:
@@ -56,11 +54,10 @@ func throw(direction:Vector2):
 func drop():
     if can_put(position_onlevel) == false:
         var cell = _level.get_map_cell(position_onlevel)
-        if cell.droppedobject is Trap:
-            cell.droppedobject.stepon_item(self)
+        if cell != null:
+            cell.droppedobject.stepon(self)
     else:
-        DroppedItem.new(_item, _level, position_onlevel)
-        queue_free()
+        put(position_onlevel)
         return
     
     # 第一候補地に置けなかったので横のマスに置きたい
@@ -79,15 +76,20 @@ func drop():
             var _propetytween:PropertyTweener = tween.tween_property(self, "position", destination * _level.tilesize, 0.05)
             tween.play()
             await tween.finished
-            DroppedItem.new(_item, _level, destination)
-            queue_free()
+            put(destination)
             return
             
     # 置けそうにないので消滅する
-    _level.GeneralWindow.show_message("アイテムは消滅してしまった…")
+    _level.GeneralWindow.show_message("{0}は消滅してしまった…".format([_item.object_name]))
     queue_free()
     return
     
+# アイテムを地面に置く
+func put(position:Vector2):
+    _level.GeneralWindow.show_message("{0}は地面に落ちた".format([_item.object_name]))
+    DroppedItem.new(_item, _level, position)
+    queue_free()    
+
 func can_put(destination:Vector2):
     var cell = _level.get_map_cell(destination)
     if cell.tiletype == _level.Tile.Wall:
@@ -108,4 +110,4 @@ func can_move(destination:Vector2):
 func after_move():
     var cell = _level.get_map_cell(position_onlevel)
     if cell.unit != null:
-        self.clash(cell.unit)
+        _item.clash(_thrower, cell.unit)

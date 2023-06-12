@@ -23,7 +23,7 @@ func _on_reserve_pressed():
 
 
 func _on_foot_pressed():
-    base_container.close_ui()
+    base_container.press_foot_button()
     pass # Replace with function body.
 
 

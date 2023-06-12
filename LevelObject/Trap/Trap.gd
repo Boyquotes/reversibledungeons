@@ -1,26 +1,14 @@
+extends LevelObject
 class_name Trap
-extends DroppedObject
 
-func _init(level:Level, position:Vector2):
-    sprite = Sprite2D.new()
-    var texture = load("res://LevelObject/Trap/TrapSample.png")
-    sprite.set_texture(texture)
-    sprite.centered = false
-    self.add_child(sprite)
-    _level = level
-    self.position_onlevel = position
-    self.position = position * _level.tilesize
-    _level.levelnode.add_child(self)
-    _level.pop_item(self, position_onlevel)
-
-func stepon(_stepper:Unit):
-    _level.GeneralWindow.show_message("罠を踏んだ！")
+## 動作に必要なクラスを取得する
+## todo:罠データをファイルから取得
+func _init():
+    action_name = "踏む"
+    object_name = "テスト用罠"
+    infotext = "説明表示テスト用(罠)"
+    imagepass = "res://LevelObject/Trap/TrapSample.png"
     
-func stepon_item(_item:ThrowingItem):
-    _level.GeneralWindow.show_message("アイテムが罠を踏んだ！")
+func stepon(stepper):
+    ## todo:罠を踏んだ時の処理
     pass
- 
-# 画面とマップデータからこのアイテムを消す
-func delete():
-    _level.delete_item(self, position_onlevel)
-    queue_free()
